@@ -2,7 +2,7 @@ SUBDIRS = .
 
 perlrun = @PERL@
 
-if RPM_BUILD_MODE
+if RPMBUILD_ENABLED
 perlwc = \#
 else
 perlwc = @PERL@ -wc
@@ -10,8 +10,6 @@ endif
 
 perl5libdir = @perl5libdir@
 ax_perl5_extra_includes_opt = @ax_perl5_extra_includes_opt@
-
-logdir = @localstatedir@/log
 
 amazondir = $(perl5libdir)/Amazon
 

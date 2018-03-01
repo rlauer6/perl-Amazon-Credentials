@@ -73,9 +73,6 @@ AC_CONFIG_MACRO_DIR([autotools])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign tar-ustar])
 
-dnl --enable-rpm-build-mode
-RPM_BUILD_MODE
-
 AC_PATH_PROG([BASHRUN],
 	[bash])
 
@@ -113,17 +110,16 @@ AC_ARG_WITH(
 
 AC_SUBST([perl5libdir])
 
+AX_DISTCHECK_HACK
+AX_DEPS_CHECK
+AX_PERLDEPS_CHECK
+AX_RPMBUILD_CHECK
+
 dnl something just to make autoconf include the autotools/ads_ stuff in the distribution
 ads_PERL_MODULE([Getopt::Long])
 
 dnl example using the PERL_MODULE possibly check with a version number
 ads_PERL_MODULE([POSIX::strptime], [REQUIRED])
-
-
-AX_DISTCHECK_HACK
-AX_DEPS_CHECK
-AX_PERLDEPS_CHECK
-AX_RPMBUILD_CHECK
 
 AC_CONFIG_FILES([
     Makefile

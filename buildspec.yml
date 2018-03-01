@@ -1,0 +1,32 @@
+version: 0.1
+
+environment_variables:
+  plaintext:
+    PATH: "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+phases:
+  install:
+    commands:
+      - yum update -y
+      - yum install autotools automake install -y util-linux rpm-build tree
+  pre_build:
+    commands:
+      - mkdir /root/rpmbuild
+      - echo -e "%_topdir /root/rpmbuild" > /root/.rpmmacros
+  build:
+    commands:
+      - env
+      - autoreconf -i --force
+      - ./configure --prefix=/usr --with-perl5libdir --enable-rpmbuild --disable-perldeps
+      - make dist
+      - echo $(basename $(ls -1 *.tar.gz | head -1) .tar.gz) > package-name
+      - rpmbuild -tb $(ls -1 *.tar.gz | head -1)
+      - test -e target-repo && mkdir /root/repo
+      - find ~/rpmbuild/RPMS/ -name '*.rpm' | sed 's|/root/rpmbuild/RPMS/||' > "/root/repo/$(cat package-name).lst"
+      - test -e target-repo && cp target-repo "/root/repo/$(cat package-name).repo"
+      - tree /root
+      - cat /root/repo/$(cat package-name).lst
+artifacts:
+  discard-paths: yes
+  files:
+    - /root/rpmbuild/RPMS/**/*
+    - /root/repo/*
