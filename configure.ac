@@ -119,7 +119,7 @@ dnl something just to make autoconf include the autotools/ads_ stuff in the dist
 ads_PERL_MODULE([Getopt::Long])
 
 dnl example using the PERL_MODULE possibly check with a version number
-ads_PERL_MODULE([POSIX::strptime], [REQUIRED])
+ads_PERL_MODULE([POSIX::strptime])
 
 AC_CONFIG_FILES([
     Makefile
