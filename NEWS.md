@@ -9,7 +9,7 @@ fixed will be noted here, as well.
 
 # perl-Amazon-Credentials 1.0.2 (2018-03-14)
 
-## Enhancements:
+## Enhancements
 
 * `get_default_region`
    ```
@@ -17,6 +17,8 @@ fixed will be noted here, as well.
    my $creds = new Amazon::Credentials;
    print $creds->get_region, "\n";
    ```
+* `$VERSION`
+
 ## Fixes
 
 # perl-Amazon-Credentials 1.0.1 (2017-11-22)
@@ -31,4 +33,4 @@ fixed will be noted here, as well.
 
 ## Enhancements: first release
 
-## Fixes: 
+## Fixes
