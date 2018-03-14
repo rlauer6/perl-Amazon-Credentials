@@ -1,4 +1,4 @@
-AC_INIT([perl-Amazon-Credentials], [1.0.1], [rlauer6@comcast.net], [perl-Amazon-Credentials])
+AC_INIT([perl-Amazon-Credentials], [1.0.2], [rlauer6@comcast.net], [perl-Amazon-Credentials])
 
 __poor_mans_expand_file_name () {
     _tmp_name=$1
