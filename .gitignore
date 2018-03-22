@@ -1,5 +1,11 @@
+aclocal.m4
+configure
+autotools/missing
+autotools/install-sh
+autotools/test-driver
 *.spec
-Makefile
+**Makefile
+**Makefile.in
 autom4te.cache/*
 config.log
 config.status

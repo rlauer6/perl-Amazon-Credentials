@@ -7,6 +7,19 @@ any of the software, notice of such bugs and the versions in which they were
 fixed will be noted here, as well.
 
 
+# perl-Amazon-Credentials 1.0.3 (2018-03-21)
+
+## Enhancements
+
+* set region based on environment AWS_REGION as first default, then
+availability zone of currently running instance
+* look for credentials using the container's metadata service if the
+process is running in a container
+
+## Fixes
+
+_None_
+
 # perl-Amazon-Credentials 1.0.2 (2018-03-14)
 
 ## Enhancements
