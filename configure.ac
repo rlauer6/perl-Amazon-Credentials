@@ -1,4 +1,4 @@
-AC_INIT([perl-Amazon-Credentials], [1.0.3], [rlauer6@comcast.net], [perl-Amazon-Credentials])
+AC_INIT([perl-Amazon-Credentials], [1.0.4-0], [rlauer6@comcast.net], [perl-Amazon-Credentials])
 
 __poor_mans_expand_file_name () {
     _tmp_name=$1
@@ -73,6 +73,10 @@ AC_CONFIG_AUX_DIR([autotools])
 AC_CONFIG_MACRO_DIR([autotools])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign tar-ustar])
+
+AC_REQUIRE_AUX_FILE([tap-driver.sh])
+
+AC_PROG_AWK
 
 AC_PATH_PROG([BASHRUN],
 	[bash])
