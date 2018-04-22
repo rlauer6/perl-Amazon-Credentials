@@ -7,15 +7,17 @@ any of the software, notice of such bugs and the versions in which they were
 fixed will be noted here, as well.
 
 
-# perl-Amazon-Credentials 1.0.4 (2018-??-??)
+# perl-Amazon-Credentials 1.0.4 (2018-04-22)
 
 ## Enhancements
 
+* added example that checks for token expiration
 * unit tests added
 * set_credentials() method can now accept hash to set credential tuple
 
 ## Fixes
 
+# set region from file or from instance
 * refresh_token() method referenced in documentation was missing
 
 # perl-Amazon-Credentials 1.0.3 (2018-03-21)
