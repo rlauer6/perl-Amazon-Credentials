@@ -6,6 +6,16 @@ running list of changes from previous versions.  If critical bugs are found in
 any of the software, notice of such bugs and the versions in which they were
 fixed will be noted here, as well.
 
+# perl-Amazon-Credentials 1.0.5 (2018-04-24)
+
+## Enhancements
+
+* Added CPAN tar ball creation (see README.md)
+
+## Fixes
+
+* deprecated poorly named methods get_ec2_credentials() in favor of
+  find_credentials()
 
 # perl-Amazon-Credentials 1.0.4 (2018-04-22)
 

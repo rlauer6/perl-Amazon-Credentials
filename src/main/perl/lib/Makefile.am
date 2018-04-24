@@ -64,6 +64,8 @@ prove.sh:
 	echo 'prove -v -r -I . t' > prove.sh
 	chmod 755 prove.sh
 
+.PHONY: cpan
+
 CLEANFILES = \
    $(GPERLMODULES) \
    $(check_SCRIPTS) \
