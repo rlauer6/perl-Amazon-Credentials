@@ -6,6 +6,17 @@ running list of changes from previous versions.  If critical bugs are found in
 any of the software, notice of such bugs and the versions in which they were
 fixed will be noted here, as well.
 
+# perl-Amazon-Credentials 1.0.6 (2018-08-03)
+
+## Enhancements
+
+* None
+
+## Fixes
+
+* AWS_PROFILE was not being handled correctly when a profile exists in
+both configuration files (config, credentials)
+
 # perl-Amazon-Credentials 1.0.5 (2018-04-24)
 
 ## Enhancements
