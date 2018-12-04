@@ -5,6 +5,7 @@ use Test::More tests => 6;
 
 use File::Temp qw/:mktemp/;
 use File::Path;
+use Data::Dumper;
 
 BEGIN {
   use_ok('Amazon::Credentials');
@@ -44,7 +45,7 @@ is($creds->get_region, 'us-west-1', 'default region');
 
 $creds = new Amazon::Credentials({ profile => 'bar', order => [qw/file/] });
 is($creds->{aws_access_key_id}, 'bar-aws-access-key-id', 'retrieve profile');
-is($creds->get_region, 'us-east-1', 'region');
+is($creds->get_region, 'us-east-1', 'region') or diag(Dumper [$creds]);
 
 END {
   eval {
