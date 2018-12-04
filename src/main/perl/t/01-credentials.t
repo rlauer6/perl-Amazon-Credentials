@@ -43,9 +43,12 @@ ok(ref($creds), 'find credentials');
 is($creds->get_aws_access_key_id, 'foo-aws-access-key-id', 'default profile');
 is($creds->get_region, 'us-west-1', 'default region');
 
-$creds = new Amazon::Credentials({ profile => 'bar', order => [qw/file/] });
+print "wtf\n";
+
+$creds = new Amazon::Credentials({ profile => 'bar', order => [qw/file/], region => 'foo'});
+
 is($creds->{aws_access_key_id}, 'bar-aws-access-key-id', 'retrieve profile');
-is($creds->get_region, 'us-east-1', 'region') or diag(Dumper [$creds]);
+is($creds->get_region, 'us-east-1', 'region');
 
 END {
   eval {
