@@ -29,20 +29,3 @@ CLEANFILES = \
    test-suite.log \
    $(UNIT_TESTS_LOGS) \
    $(UNIT_TESTS_TRS)
-
-.PHONY: cpan
-
-cpan:
-	set -x; tmpdir=$$(mktemp -d); \
-	destdir=$$(pwd); \
-	ln -s $$(pwd)/t $$tmpdir/t; \
-	ln -s $$(pwd)/lib $$tmpdir/lib; \
-	for a in Makefile.PL MANIFEST; do \
-	  ln -s $$(pwd)/$$a $$tmpdir/$$a; \
-	done; \
-	cd $$tmpdir; \
-	pwd; \
-	perl Makefile.PL; \
-	make dist; \
-	cp *.tar.gz $$destdir; \
-	rm -rf $$tmpdir
