@@ -66,17 +66,20 @@ my %new_creds = (
 		);
 
 $creds->set_credentials(\%new_creds);
-ok($creds->is_token_expired, 'is_token_expired() - yes?');
+ok($creds->is_token_expired, 'is_token_expired() - yes?') or
+  diag(Dumper [ $creds->get_expiration(), time2str("%Y-%m-%dT%H:%M:%SZ", time, "UTC")]);
 
-$creds->set_expiration(time2str("%Y-%m-%dT%H:%M:%S%Z", time + 5 + (5 * 60),"UTC"));
-ok(! $creds->is_token_expired, 'is_token_expired() - no?');
+$creds->set_expiration(time2str("%Y-%m-%dT%H:%M:%SZ", time + 5 + (5 * 60),"UTC"));
+ok(! $creds->is_token_expired, 'is_token_expired() - no?') or
+  diag(Dumper [ $creds->get_expiration(), time2str("%Y-%m-%dT%H:%M:%SZ", time, "UTC")]);
 
 # expire token
-$creds->set_expiration(time2str("%Y-%m-%dT%H:%M:%S%Z", time + -5 + (5 * 60),"UTC"));
-ok($creds->is_token_expired, 'is_token_expired() - reset as expired');
+$creds->set_expiration(time2str("%Y-%m-%dT%H:%M:%SZ", time + -5 + (5 * 60),"UTC"));
+ok($creds->is_token_expired, 'is_token_expired() - reset as expired') or
+  diag(Dumper [ $creds->get_expiration(), time2str("%Y-%m-%dT%H:%M:%SZ", time, "UTC")]);
 
 $new_creds{AccessKeyId} = 'buz-aws-access-key-id';
-$new_creds{Expiration} = time2str("%Y-%m-%dT%H:%M:%S%Z", time + 5 + (5 * 60),"UTC");
+$new_creds{Expiration} = time2str("%Y-%m-%dT%H:%M:%SZ", time + 5 + (5 * 60),"UTC");
 $new_creds{SecretAccessKey} = 'buz-aws-secret-access-key';
 $new_creds{Token} = 'buz';
 
@@ -91,7 +94,8 @@ my $content = to_json(\%new_creds);
 $creds->set_role('role');
 $creds->refresh_token;
 
-ok(! $creds->is_token_expired, 'refresh_token()');
+ok(! $creds->is_token_expired, 'refresh_token()') or
+  diag(Dumper [ $creds ]);
 
 END {
   eval {
