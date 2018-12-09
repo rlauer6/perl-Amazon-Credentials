@@ -55,20 +55,21 @@ eot
 $ENV{HOME} = "$home";
 $ENV{AWS_PROFILE} = undef;
 
-my $creds = new Amazon::Credentials({ order => [qw/file/], debug => 0 });
+my $creds = new Amazon::Credentials({ order => [qw/file/], debug => $ENV{DEBUG} ? 1 : 0 });
 ok(ref($creds), 'find credentials');
 
 my %new_creds = (
 		 aws_access_key_id     => 'biz-aws-access-key-id',
 		 aws_secret_access_key => 'biz-aws-secret-access-key',
 		 token                 => 'biz',
-		 expiration            => time2str("%Y-%m-%dT%H:%M:%S%Z", time + -5 + (5 * 60), "UTC")
+		 expiration            => time2str("%Y-%m-%dT%H:%M:%SZ", time + -5 + (5 * 60), "UTC")
 		);
 
 $creds->set_credentials(\%new_creds);
 ok($creds->is_token_expired, 'is_token_expired() - yes?') or
   diag(Dumper [ $creds->get_expiration(), time2str("%Y-%m-%dT%H:%M:%SZ", time, "UTC")]);
 
+# is_expired() should be true 5 or less minutes before expiration time
 $creds->set_expiration(time2str("%Y-%m-%dT%H:%M:%SZ", time + 5 + (5 * 60),"UTC"));
 ok(! $creds->is_token_expired, 'is_token_expired() - no?') or
   diag(Dumper [ $creds->get_expiration(), time2str("%Y-%m-%dT%H:%M:%SZ", time, "UTC")]);
@@ -77,6 +78,7 @@ ok(! $creds->is_token_expired, 'is_token_expired() - no?') or
 $creds->set_expiration(time2str("%Y-%m-%dT%H:%M:%SZ", time + -5 + (5 * 60),"UTC"));
 ok($creds->is_token_expired, 'is_token_expired() - reset as expired') or
   diag(Dumper [ $creds->get_expiration(), time2str("%Y-%m-%dT%H:%M:%SZ", time, "UTC")]);
+
 
 $new_creds{AccessKeyId} = 'buz-aws-access-key-id';
 $new_creds{Expiration} = time2str("%Y-%m-%dT%H:%M:%SZ", time + 5 + (5 * 60),"UTC");
@@ -95,7 +97,7 @@ $creds->set_role('role');
 $creds->refresh_token;
 
 ok(! $creds->is_token_expired, 'refresh_token()') or
-  diag(Dumper [ $creds ]);
+  diag(Dumper [ $creds->get_expiration(), time2str("%Y-%m-%dT%H:%M:%SZ", time, "UTC")]);
 
 END {
   eval {
