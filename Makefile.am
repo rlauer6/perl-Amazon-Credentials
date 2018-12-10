@@ -1,4 +1,4 @@
-SUBDIRS = . src
+SUBDIRS = . src cpan
 
 ACLOCAL_AMFLAGS = -I autotools
 

@@ -1,12 +1,10 @@
-version: 0.1
-
 project:
-  git: https://github.com/rlauer6/perl-Amazon-Credentials.git 
   description: "AWS credentials discoverer"
   author:
     name: Rob Lauer
     mailto: rlauer6@comcast.net
 pm_module: Amazon::Credentials
 path:
-  pm_module: src/main/perl/lib
-  tests: src/main/perl/t
+  pm_module: ../src/main/perl/lib
+  tests: ../src/main/perl/t
+extra: extra-files
