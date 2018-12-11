@@ -29,6 +29,19 @@ rpmbuild -tb perl-Amazon-Credentials-1.0.0.tar.gz
 See https://github.com/rlauer6/make-cpan-dist for more information
 about creating CPAN distributions from these RPM based projects
 
+This project contains a `makefile` that will help you create the CPAN
+tarball. Try this recipe:
+
+```
+git clone https://github.com/rlauer6/perl-Amazon-Credentials.git
+cd perl-Amazon-Credentials
+autoreconf -i --force
+./configure
+make
+cd cpan
+make cpan
+```
+
 # Author
 
 Rob Lauer <rlauer6@comcast.net>
