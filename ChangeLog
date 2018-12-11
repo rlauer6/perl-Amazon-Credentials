@@ -5,6 +5,7 @@ Tue Dec 11 12:53:58 2018  Rob Lauer  <rlauer6@comcast.net>
 	* cpan/Makefile.am: rename tarball for minor release only
 	* src/main/perl/t/02-credentials.t: GMT, not UTC
 	* README.md: mention 'make cpan'
+	* cpan/extra-files: new
 
 Mon Dec 10 13:44:31 2018  Rob Lauer  <rlauer6@comcast.net>
 
