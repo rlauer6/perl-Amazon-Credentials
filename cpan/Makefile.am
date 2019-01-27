@@ -15,7 +15,7 @@ cpan: buildspec.yml
 		test -e "$$tarball" && mv $$tarball $${package##perl-}-$$package_version.tar.gz; \
 	fi
 
-.PHONEY: cpan
+.PHONY: cpan
 
 clean-local:
 	rm -f *.tar.gz

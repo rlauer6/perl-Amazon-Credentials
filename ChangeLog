@@ -1,3 +1,10 @@
+Sun Jan 27 03:27:22 2019  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.10-2]:
+	* cpan/Makfile.am: .PHONY
+	* src/main/perl/lib/Amazon/Credentials.pm.in: pod changes
+	* configure.ac: bump minor version
+
 Tue Dec 11 12:53:58 2018  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.10-1]:
