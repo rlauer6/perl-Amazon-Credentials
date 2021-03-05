@@ -1,3 +1,6 @@
+**/*.1man
+**/*.pm
+autotools/*
 aclocal.m4
 configure
 autotools/missing

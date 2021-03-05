@@ -1,3 +1,11 @@
+Fri Mar  5 14:54:01 2021  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.10-4]:
+	* buildspec.yml
+	- 0.2
+	- add YRB_EXTRA for repo update notification
+	* README.md: badge
+
 Sun Jan 27 04:03:28 2019  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.10-3]:
