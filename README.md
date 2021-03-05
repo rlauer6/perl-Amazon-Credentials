@@ -2,7 +2,7 @@
 
 This is the README file for the `perl-Amazon-Credentials` project.
 
-![badge[(https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoia3BvcFcwdlRBS0Q4eXRCempKZCtUNTBraGZOdVg1ajJ4dTVQbUZDRzdDWlJYNEJpd0FpMnk4UHZWWUpwRnM5Qk5rUmRNeXFReE9uZWp6M2VpeVIxUWVvPSIsIml2UGFyYW1ldGVyU3BlYyI6Img1bWNSVGIvZjBQTzlHazEiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
+![badge](https://codebuild.us-east-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoia3BvcFcwdlRBS0Q4eXRCempKZCtUNTBraGZOdVg1ajJ4dTVQbUZDRzdDWlJYNEJpd0FpMnk4UHZWWUpwRnM5Qk5rUmRNeXFReE9uZWp6M2VpeVIxUWVvPSIsIml2UGFyYW1ldGVyU3BlYyI6Img1bWNSVGIvZjBQTzlHazEiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
 
 ---
 
