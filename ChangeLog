@@ -1,3 +1,11 @@
+Wed Sep 15 16:09:27 2021  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.10-5]:
+	* configure.ac: bump release
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- pod - default order
+	(find_credentials): check if profile defined and true
+
 Fri Mar  5 14:54:01 2021  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.10-4]:
