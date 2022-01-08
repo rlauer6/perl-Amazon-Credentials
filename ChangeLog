@@ -1,3 +1,16 @@
+Sat Jan  8 09:44:57 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.11]:
+	* .gitignore: add cpan/local
+	* configure.ac: use VERSION file
+	* VERSION: new
+	* bootstrap: bump
+
+	[get_creds_from_container]:
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(get_creds_from_container): $@ used but not in eval
+	(refresh_token): check for ref AND keys
+
 Wed Sep 15 16:09:27 2021  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.10-5]:
