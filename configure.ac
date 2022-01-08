@@ -1,4 +1,12 @@
-AC_INIT([perl-Amazon-Credentials], [1.0.10-5], [rclauer@gmail.com], [perl-Amazon-Credentials])
+AC_INIT([perl-Amazon-Credentials],
+        m4_esyscmd_s([
+if test -z "$VERSION"; then \
+  VERSION=$(test -e VERSION && cat VERSION); \
+  VERSION=${VERSION:-0.0.0}; \
+fi; \
+echo $VERSION
+]),
+        m4_esyscmd_s([if test -z "$EMAIL"; then EMAIL=rclauer@gmail,com; fi; echo $EMAIL]))
 
 __poor_mans_expand_file_name () {
     _tmp_name=$1
@@ -120,11 +128,15 @@ AX_DEPS_CHECK
 AX_PERLDEPS_CHECK
 AX_RPMBUILD_CHECK
 
-dnl something just to make autoconf include the autotools/ads_ stuff in the distribution
+ads_PERL_MODULE([Data::Dumper])
+ads_PERL_MODULE([Date::Format])
 ads_PERL_MODULE([Getopt::Long])
-
-dnl example using the PERL_MODULE possibly check with a version number
+ads_PERL_MODULE([HTTP::Request])
+ads_PERL_MODULE([JSON])
+ads_PERL_MODULE([LWP::UserAgent])
 ads_PERL_MODULE([POSIX::strptime])
+ads_PERL_MODULE([Scalar::Util])
+ads_PERL_MODULE([Time::Local])
 
 AC_CONFIG_FILES([
     Makefile

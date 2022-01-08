@@ -1,4 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# -*- mode: sh; -*
+
+function _bump {
+    version=$(mktemp)
+    eval $(echo perl -ne "'my \$p=$1; my @v=split /\./; \$v[2]=0 if \$p == 1; \$v[1] = \$v[2] = 0 unless \$p; \$v[\$p]++; print join(\".\", @v);'" VERSION) > $version
+    test -e "$version" && mv $version VERSION
+    cat VERSION
+}
+
+function bump {
+    [ "$1" = "major" ] && _bump 0 && exit;
+    [ "$1" = "minor" ] && _bump 1 && exit;
+    [ "$1" = "release" ] && _bump 2 && exit;
+}
+
+function bump_major {
+    bump 0
+}
+
+function bump_minor {
+    bump 1
+}
+
+function bump_release {
+    bump 2
+}
+
 
 # Usage:
 #   bootstrap [ AUTORECONF_ARG ... ]
@@ -13,8 +40,13 @@
 #   $ ./bootstrap --debug
 
 declare -r PROG='bootstrap'
+if [ "$1" = "bump" ]; then
+    bump $2
+    exit
+fi
 
-_run_on_dir="$(readlink -f "$(dirname "${0}")")"
+_run_on_dir=$( cd "$(dirname "$0")" ; pwd -P )
+
 if test $? -ne 0; then
     printf "${PROG} (ERROR): was unable to determine realpath of prog \"%s\"\n" \
       "$0" 1>&2
@@ -36,8 +68,7 @@ test -d "${_include_dir}" || {
     exit 1
 }
 
-
-set -x
+test -n "$DEBUG" && set -x
 
 # From autoreconf(1):
 #   "The environment  variables  AUTOCONF,  AUTOHEADER,  AUTOMAKE,  ACLOCAL,
@@ -47,13 +78,35 @@ set -x
 # We use these to allow us to easily use the correct versions of the GNU
 # autotools. Note: On some systems, the tools are /only/ installed with their
 # version number suffixes, so the default names, such as 'aclocal' won't work.
-export ACLOCAL='aclocal-1.13'
-export AUTOMAKE='automake-1.13'
+AM_VERSION=$(automake --version | grep "^automake" | awk '{print $4}' | sed 's/^\([0-9]\+\.[0-9]\+\)\.[0-9]\+$/\1/;')
+
+if test "$(which aclocal)"; then
+    export ACLOCAL="aclocal"
+elif test "$(which aclocal-$AM_VERSION)"; then
+    export ACLOCAL="aclocal-$AM_VERSION"
+else
+    echo "no aclocal found"
+    exit 1
+fi
+
+if test "$(which automake)"; then
+    export AUTOMAKE="automake"
+elif test "$(which automake-$AM_VERSION)"; then
+    export AUTOMAKE="automake-$AM_VERSION"
+else
+    echo "no automake found"
+fi
+
+# use the VERSION file in the project to set the PACKAGE_VERSION
+#if test -z "$VERSION"; then
+#    test -e VERSION && VERSION=$(cat VERSION)
+#fi
 
 # --force: consider all files obsolete (ignores timestamps)
 # --warnings=all
-autoreconf \
-           "-i" \
-           "--include=${_include_dir}" \
-           "$@" \
-           "${_configure_ac}"
+VERSION="$VERSION" autoreconf \
+    "--include=${_include_dir}" \
+    "$@" \
+    --force \
+    -i \
+    "${_configure_ac}"
