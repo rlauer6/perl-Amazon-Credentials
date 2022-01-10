@@ -38,14 +38,12 @@ eot
 $ENV{HOME} = "$home";
 $ENV{AWS_PROFILE} = undef;
 
-my $creds = new Amazon::Credentials({ order => [qw/file/]});
+my $creds = Amazon::Credentials->new({ order => [qw/file/], debug => $ENV{DEBUG} ? 1: 0});
 ok(ref($creds), 'find credentials');
 is($creds->get_aws_access_key_id, 'foo-aws-access-key-id', 'default profile');
 is($creds->get_region, 'us-west-1', 'default region');
 
-print "wtf\n";
-
-$creds = new Amazon::Credentials({ profile => 'bar', order => [qw/file/], region => 'foo'});
+$creds = Amazon::Credentials->new({ profile => 'bar', order => [qw/file/], region => 'foo'});
 
 is($creds->{aws_access_key_id}, 'bar-aws-access-key-id', 'retrieve profile');
 is($creds->get_region, 'us-east-1', 'region');
