@@ -9,7 +9,7 @@ This is the README file for the `perl-Amazon-Credentials` project.
 # DESCRIPTION
 
 Perl module to find AWS credentials either in your environment, from
-your credentials files or your EC2 meta data.  See:
+your credentials files, your EC2 or container's metadata .  See:
 
 ```
 perldoc Amazon::Credentials
@@ -25,7 +25,7 @@ cd perl-Amazon-Credentials
 autoreconf -i --force
 ./configure --enable-rpmbuild
 make dist
-rpmbuild -tb perl-Amazon-Credentials-1.0.0.tar.gz
+rpmbuild -tb perl-Amazon-Credentials-1.0.11.tar.gz
 ```
 
 # Building CPAN tarball
