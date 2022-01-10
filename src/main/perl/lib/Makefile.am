@@ -53,7 +53,7 @@ PERLINCLUDE = \
 $(GPERLMODULES): % : %.in 
 	test -d "$$(dirname "$@")" || $(INSTALL) -d "$$(dirname "$@")"
 	$(do_subst) $< > $@
-	$(perlwc) $(PERLINCLUDE)  $@ || { ret=$?; rm $@ && exit $ret; }
+	$(perlwc) $(PERLINCLUDE)  $@ || { ret=$$?; rm $@ && exit $$?; }
 
 all:
 
