@@ -56,7 +56,7 @@ $ENV{HOME} = "$home";
 $ENV{AWS_PROFILE} = undef;
 
 my $creds = new Amazon::Credentials({ order => [qw/file/], debug => $ENV{DEBUG} ? 1 : 0 });
-ok(ref($creds), 'find credentials');
+ok(ref($creds), 'find credentials - file');
 
 my %new_creds = (
 		 aws_access_key_id     => 'biz-aws-access-key-id',
