@@ -6,7 +6,6 @@ environment_variables:
 phases:
   install:
     commands:
-      - yum update -y
       - yum install autotools automake install -y util-linux rpm-build tree
   pre_build:
     commands:
@@ -15,7 +14,8 @@ phases:
   build:
     commands:
       - env
-      - autoreconf -i --force
+      - test -e 'bootstrap' && ./bootstrap 
+      - test -e 'bootstrap' || autoreconf -i --force
       - ./configure --prefix=/usr --with-perl5libdir --enable-rpmbuild --disable-perldeps
       - make dist
       - echo $(basename $(ls -1 *.tar.gz | head -1) .tar.gz) > package-name
