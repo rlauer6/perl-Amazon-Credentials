@@ -6,7 +6,7 @@ environment_variables:
 phases:
   install:
     commands:
-      - yum install autotools automake install -y util-linux rpm-build tree
+      - yum install autotools automake install -y util-linux rpm-build tree which
   pre_build:
     commands:
       - mkdir /root/rpmbuild
