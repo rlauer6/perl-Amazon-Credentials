@@ -6,7 +6,7 @@ if test -z "$VERSION"; then \
 fi; \
 echo $VERSION
 ]),
-        m4_esyscmd_s([if test -z "$EMAIL"; then EMAIL=rclauer@gmail,com; fi; echo $EMAIL]))
+        m4_esyscmd_s([if test -z "$EMAIL"; then EMAIL=rclauer@gmail,com; fi; echo $EMAIL]),[perl-Amazon-Credentials])
 
 __poor_mans_expand_file_name () {
     _tmp_name=$1
