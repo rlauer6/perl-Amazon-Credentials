@@ -1,6 +1,21 @@
+Sat Jan 29 11:53:12 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.16 Config::Tiny]:
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- some refactoring
+	- use Config::Tiny
+	(find_credentials)
+	- use Config::Tiny
+	(get_creds_from_ini_file): new
+	(get_creds_from_file): moved to sub from inline (deprecated)
+	(get_creds_from_process): rename from get_credentials_from_process
+	* src/main/perl/t/01-credentials.t: add default profile
+	* src/main/perl/t/02-credentials.t: use profile for test
+	* src/main/perl/t/04-process.t: new
+
 Sat Jan 29 06:53:47 2022  Rob Lauer  <rlauer6@comcast.net>
 
-	[1.0.15: credential process]:
+	[1.0.15 credential process]:
 	* VERSION: bump
 	* src/main/perl/lib/Amazon/Credentials.pm.in
 	- use English;

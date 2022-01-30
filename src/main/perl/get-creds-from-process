@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+echo '{ "AccessKeyId" : "aws-access-key-id", "SecretAccessKey" : "bar", "SessionToken" : "token", "Expiration" : "expiration", "Region" : "us-east-1" }'

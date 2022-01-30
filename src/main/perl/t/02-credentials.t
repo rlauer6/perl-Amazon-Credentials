@@ -38,7 +38,9 @@ my $home = mkdtemp("amz-credentials-XXXXX");
 my $credentials_file = eval {
   mkdir "$home/.aws";
   
-  open (my $fh, ">$home/.aws/credentials") or BAIL_OUT("could not create temporary credentials file");
+  open (my $fh, '>', "$home/.aws/credentials")
+    or BAIL_OUT("could not create temporary credentials file");
+  
   print $fh <<eot;
 [foo]
 aws_access_key_id=foo-aws-access-key-id
@@ -55,7 +57,7 @@ eot
 $ENV{HOME} = "$home";
 $ENV{AWS_PROFILE} = undef;
 
-my $creds = new Amazon::Credentials({ order => [qw/file/], debug => $ENV{DEBUG} ? 1 : 0 });
+my $creds = Amazon::Credentials->new({ profile => 'bar', order => [qw/file/], debug => $ENV{DEBUG} ? 1 : 0 });
 ok(ref($creds), 'find credentials - file');
 
 my %new_creds = (

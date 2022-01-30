@@ -19,7 +19,7 @@ my $credentials_file = eval {
   open (my $fh, ">$home/.aws/credentials") or BAIL_OUT("could not create temporary credentials file");
   print $fh <<eot;
 [default]
-region = us-west-1
+profile = bar
 
 [foo]
 aws_access_key_id=foo-aws-access-key-id
@@ -40,8 +40,9 @@ $ENV{AWS_PROFILE} = undef;
 
 my $creds = Amazon::Credentials->new({ order => [qw/file/], debug => $ENV{DEBUG} ? 1: 0});
 ok(ref($creds), 'find credentials');
-is($creds->get_aws_access_key_id, 'foo-aws-access-key-id', 'default profile');
-is($creds->get_region, 'us-west-1', 'default region');
+
+is($creds->get_aws_access_key_id, 'bar-aws-access-key-id', 'default profile');
+is($creds->get_region, 'us-east-1', 'default region');
 
 $creds = Amazon::Credentials->new({ profile => 'bar', order => [qw/file/], region => 'foo'});
 
