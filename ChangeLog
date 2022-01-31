@@ -1,3 +1,13 @@
+Mon Jan 31 07:06:15 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.16]:
+	* cpan/extra-files: get-creds-from-process
+	* src/main/perl/Makefile.am
+	- add 03-, 04- tests to list
+	- fix make check from root
+	* src/main/perl/lib/Makefile.am: tests moved up one dir
+	* Makefile.am: make cpan
+
 Sun Jan 30 10:06:07 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.16]:
@@ -17,6 +27,7 @@ Sat Jan 29 11:53:12 2022  Rob Lauer  <rlauer6@comcast.net>
 	* src/main/perl/t/01-credentials.t: add default profile
 	* src/main/perl/t/02-credentials.t: use profile for test
 	* src/main/perl/t/04-process.t: new
+	* src/main/perl/get-creds-from-process: new
 
 Sat Jan 29 06:53:47 2022  Rob Lauer  <rlauer6@comcast.net>
 
