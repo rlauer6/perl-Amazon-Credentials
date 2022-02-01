@@ -22,10 +22,10 @@ Assuming you have an `rpmbuild` environment setup for yourself:
 ```
 git clone https://github.com/rlauer6/perl-Amazon-Credentials.git
 cd perl-Amazon-Credentials
-autoreconf -i --force
+./bootstrap
 ./configure --enable-rpmbuild
 make dist
-rpmbuild -tb perl-Amazon-Credentials-1.0.11.tar.gz
+rpmbuild -tb perl-Amazon-Credentials-1.0.17.tar.gz
 ```
 
 # Building CPAN tarball
@@ -39,10 +39,8 @@ tarball. Try this recipe:
 ```
 git clone https://github.com/rlauer6/perl-Amazon-Credentials.git
 cd perl-Amazon-Credentials
-autoreconf -i --force
+./bootstrap
 ./configure
-make
-cd cpan
 make cpan
 ```
 

@@ -1,4 +1,4 @@
-SUBDIRS = . src
+SUBDIRS = . src cpan
 
 ACLOCAL_AMFLAGS = -I autotools
 
@@ -13,3 +13,5 @@ dist_noinst_DATA = \
 cpan:
 	cd . && $(MAKE)
 	cd cpan && $(MAKE) cpan
+
+DISTCHECK_CONFIGURE_FLAGS = --enable-distcheck-hack --enable-rpmbuild

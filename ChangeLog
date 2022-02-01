@@ -1,3 +1,23 @@
+Tue Feb  1 08:41:42 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.17: perlcritic, format, as_string, credential_keys]:
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- varioius "suggestions" from perlcritic
+	(as_string): new
+	(format): new
+	(credential_keys): new
+	(find_credentials): refactor
+	(get_creds_from_ini_file): refactor
+	* VERSION: bump
+	* .perlcriticrc: new
+	* README.md: update build docs
+	* .gitigmore: + cpan/upload-instructions
+
+	[distcheck]:
+	* Makefile.am: distcheck
+	* src/main/perl/Makefile.am: likewise
+	* cpan/Makefile.am: added buildspec.yml to dist
+
 Mon Jan 31 07:06:15 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.16]:

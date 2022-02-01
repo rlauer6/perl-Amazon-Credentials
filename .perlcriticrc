@@ -1,0 +1,9 @@
+[InputOutput::RequireCheckedSyscalls]
+functions = :defaults
+exclude_functions = print
+
+[ControlStructures::ProhibitPostfixControls]
+flowcontrol=carp cluck confess croak die exit goto warn LOGCROAK LOGCLUCK LOGCARP LOGCONFESS LOGDIE LOGEXIT LOGWARN
+
+[ValuesAndExpressions::ProhibitConstantPragma]
+

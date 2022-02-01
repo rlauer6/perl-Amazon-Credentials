@@ -17,5 +17,7 @@ cpan: buildspec.yml
 
 .PHONY: cpan
 
+dist_noinst_DATA = buildspec.yml
+
 clean-local:
 	rm -f *.tar.gz
