@@ -1,3 +1,11 @@
+Tue Feb  1 12:06:36 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.17: unit tests for new methods]:
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(format_credentials): don't join on "\n"
+	* src/main/perl/t/05-format.t
+	- new unit test for formattingmethods
+
 Tue Feb  1 08:41:42 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.17: perlcritic, format, as_string, credential_keys]:
