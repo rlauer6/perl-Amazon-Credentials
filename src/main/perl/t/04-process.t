@@ -21,7 +21,7 @@ my $credentials_file = eval {
   my $process = getcwd . '/get-creds-from-process';
   
   print $fh <<eot;
-[foo]
+[profile foo]
 credential_process = $process
 region = us-east-1
 
