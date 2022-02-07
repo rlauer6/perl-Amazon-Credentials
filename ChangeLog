@@ -1,4 +1,21 @@
-Tue Feb  1 16:23:26 2022  Rob Lauer  <rlauer6@comcast.net>
+Mon Feb  7 08:00:07 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.0.19: log security]:
+	* VERSION: bump
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- pod tweaks and additions (SECURITY)
+	- only need perl 5.10?
+	- + insecure option
+	(new): output warning if insecure mode
+	(dump_ini_file): new
+	(get_creds_from_ini_file): use above method
+	(dump_response): new
+	(get_creds_from_role): use above
+	(get_creds_from_container): likewise
+	(format_credentials): q{}
+	* src/main/perl/t/06-security.t: new
+
+Tue Feb  1 16:23:26 202`2  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.18: debugging]:
 	* VERSION: bump
