@@ -1,5 +1,6 @@
-cpan/upload-instructions
-cpan/local
+container-test/*
+cpan/provides
+cpan/test-requires
 **/*.1man
 **/*.pm
 autotools/*

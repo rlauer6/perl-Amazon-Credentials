@@ -1,10 +1,29 @@
 # NEWS
 
-This is the `NEWS` file for the `perl-Amazon-Credentials` project. This file contains
-information on changes since the last release of the package, as well as a
-running list of changes from previous versions.  If critical bugs are found in
-any of the software, notice of such bugs and the versions in which they were
-fixed will be noted here, as well.
+This is the `NEWS` file for the `perl-Amazon-Credentials`
+project. This file contains information on changes since the last
+release of the package, as well as a running list of changes from
+previous versions.  If critical bugs are found in any of the software,
+notice of such bugs and the versions in which they were fixed will be
+noted here, as well.
+
+# perl-Amazon-Credentials 1.1.0 (2022-04-06)
+
+## Enhancements
+
+There have been several enhanements to this module, specifically to
+reduce the likelihood of exfiltration of credentials and to enhance
+overall security.
+
+* Support for IMDSv2 
+* Encryption of credentials in memory
+* Ability to disable credential cacheing
+* DEBUG set in the environment will no longer enable DEBUG output
+* new unit tests
+
+## Fixes
+
+* region set in config file profiles was not being used
 
 # perl-Amazon-Credentials 1.0.6 (2018-08-03)
 

@@ -21,3 +21,4 @@ dist_noinst_DATA = buildspec.yml
 
 clean-local:
 	rm -f *.tar.gz
+	rm -f provides test-requires

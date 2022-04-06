@@ -1,3 +1,58 @@
+Wed Mar 30 08:28:21 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.0 - credential encryption, IMDSv2 support]:
+	* NEWS.md: notes on enhancements in this release
+	* VERSION: bump minor version
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- pod updates
+	(new)
+	- use debug flag set insecure mode for full debug output
+	- default mode is to encrypt credentials if Crypt::CBC installed
+	- add cache attribute to enable/disable cacheing behavior
+	(credential_keys)
+	- fetch credentials if cacheing disabled
+	- delete token related members if no token
+	(get_default_region)
+	- use container metadata if executing in container
+	- add IMDSv2 token for EC2
+	(find_credentials)
+	- log message
+	- use new setter/getters to enforce encryption
+	(get_creds_from_container)
+	- don't store serialized credentials ($creds->{serialized})
+	(get_creds_from_role)
+	- likewise
+	- add headers for IMDSv2
+	(get_creds_from_ini_file)
+	- set region from section
+	* src/main/perl/t/01-credentials.t
+	- use new getters
+	* src/main/perl/t/03-container.t
+	- perltidy
+	- set ECS_CONTAINER_METADATA_URI_V4
+	(get_aws_access_key_id): new
+	(get_aws_secret_access_key): new
+	(get_creds_from_file): removed
+	(reset_credentials): new
+	(rotate_credentials): new
+	(set_aws_access_key_id): new
+	(set_aws_secret_access_key): new
+	(set_token): new
+	(create_passkey): new
+	(_create_metadata_url): new
+	(_crypt): new
+	(_decrypt): new
+	(_encrypt): new
+	(_fetch_passkey): new
+	(_init_encryption): new
+	* src/main/perl/t/07-encryption.t: new
+	* src/main/perl/t/08-imdsv2.t: new
+	* src/main/perl/t/09-token-encryption.t: new
+	* README-TESTING.md: new
+	* cpan/requires: new
+	* src/main/perl/get-credentials-from-process
+	- use real expiration date
+
 Mon Feb  7 08:00:07 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.19: log security]:
@@ -15,7 +70,7 @@ Mon Feb  7 08:00:07 2022  Rob Lauer  <rlauer6@comcast.net>
 	(format_credentials): q{}
 	* src/main/perl/t/06-security.t: new
 
-Tue Feb  1 16:23:26 202`2  Rob Lauer  <rlauer6@comcast.net>
+Tue Feb  1 16:23:26 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.0.18: debugging]:
 	* VERSION: bump
