@@ -1,6 +1,7 @@
 Thu Apr 14 09:48:53 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.1 - pod fixes]
+	* NEWS.md: update
 	* src/main/perl/lib/Amazon/Credentials.pm.in
 	- pod fixes
 

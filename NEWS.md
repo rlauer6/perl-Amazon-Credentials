@@ -7,7 +7,17 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
-# perl-Amazon-Credentials 1.1.0 (2022-04-06)
+# perl-Amazon-Credentials 1.1.1 (2022-04-14)
+
+## Enhancements
+
+None
+
+## Fixes
+
+pod fixes
+
+# perl-Amazon-Credentials 1.1.0 (2022-04-14)
 
 ## Enhancements
 
