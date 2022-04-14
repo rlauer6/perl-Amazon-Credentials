@@ -1,3 +1,50 @@
+Thu Apr 14 08:18:59 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.0 - credential encryption, IMDSv2 support]:
+	* src/main/perl/t/11-order.t: new
+	* src/main/perl/get-creds-from-process
+	- create more realistic payload
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- pod improvements
+	- export create_passkey
+	(set_default_logger): new
+	(_init_logger): use above
+	(_set_defaults)
+	- set default order from split string
+	- make sure order is array ref
+	- validate search order
+	- do not use debug flag to set insecure flag
+	(get_creds_from_ini_file)
+	- test 'aws_access_key_id', not keys
+	(reset_credentials)
+	- add flag to regenerate credentials
+	* src/main/perl/t/01-credentials.t
+	- add test for region
+	- refactored
+	* src/main/perl/t/02-credentials.t
+	- refactored
+	- perltidy
+	* src/main/perl/t/03-container.t: likewise
+	* src/main/perl/t/04-process.t: likewise
+	* src/main/perl/t/05-format.t: likewise
+	* src/main/perl/t/06-security.t: likewise
+	* src/main/perl/t/07-encryption.t
+	- likewise
+	- breakout subtest 'do not cache credentials'
+	- add test for rotating credentials w/custom passkey
+	- order tests logically
+	- test default and custom ciphers
+	* src/main/perl/t/08-imdsv2.t
+	- use instance role
+	* src/main/perl/t/09-live-credentials.t
+	- subtest 'get real credentials from role'
+	- subtest 'get real credentials from profile'
+	* src/main/perl/t/11-order.t: new
+	* src/main/perl/t/100logging.t: test for default message changed
+	* README-TESTING.md: new
+	* src/main/perl/Makefile.am
+	(CLEANFILES): +prove.sh
+
 Thu Apr  7 08:46:59 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.0 - credential encryption, IMDSv2 support]:

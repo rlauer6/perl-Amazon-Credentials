@@ -1,3 +1,9 @@
 #!/usr/bin/env bash
 
-echo '{ "AccessKeyId" : "aws-access-key-id", "SecretAccessKey" : "aws-secret-access-key", "SessionToken" : "aws-session-token", "Expiration" : "2022-04-06T16:54:15+00:00" }'
+cat <<EOF
+{ "AccessKeyId" : "ABCDEFGHIJKLMNO", 
+  "SecretAccessKey" : "aBcd09+/fjasdfadfHFD", 
+  "SessionToken" : "U2FsdGVkX19SsBqHvBO2ZPMisxrK6Fnosq7P/BlMp/1+2Zr3QoWLtpqtbbezD4tfKUO9sYrEBHPm\nnP0ZLviKTSjTb0HDtgshiCod20cVYTSPZIX4uuMrz2PmTH69tMLCWSStxZBRYAd6mygtFSQC/KJ5\nepnjVilor4CCtMHSZ4BsnBHTiXUhNfF0otxpRC6mpnbPovD3H2YvsDQVmdDNSTfYvdivV8uO21Tm\nTwzDKWV1zC8jp0wLxgJYp/sHYBfoT7YDoy61Zt5+7PsGwBBQR7OPbVdIzEDAkVSvFP5rv/Mp02Fp\nDdqVR1eBszTuLrun7gg4rnF4YJURliyJOAXLJjF0yx8fqrkWiAX638xaHMsNO98YEzcESDHsp521\n0vWkWNTcnztFrymrlA+TMGsPfgn5IL3OwuqPO2URrQSaPMNhaG1nLkcvhI4Przv3LxbWrClEBhxm\niAUMgZ+o8k6ATlV9hFbivan4lMG5uECmYVfpjg5NQ/c2C9AaGsyaqhiESm8HE+flOIJEvTsMZXPV\nRswl+uQQ8lQc+qyAKAKiNLDMqf+WOIFKQD6T7/xsJ2aFKbZeYSNSb4dxqw1rWGJ9JA5/Iz7+2fKO\nHajUSsnNK0/vyfknf8yNaQBd8RPu/p3TMOz08qgevtEvmv9ox4eM4uVETlCV2DnQhEUkOheK3w4S\ng6twUmKJZzs6DcPC4xwdDApN8RDFY41+In4u1t8sxYhr0TNChgc/oSZ/QWh+OpdkQKfNnKxWh7bA\nA2yBUXAel6ovwafU6HW3rRmIB5zj+SRsimPEk4JRd6XdGZ6L9DC2bZ2LeG3+UfuFSqXkfoMD5Ksj\nuTuRvvwPa1wAh/dKOSNkvdHv6w1CdnvGY9RWCRGwhdK61bE6pTZj5OS5XA==", 
+  "Expiration" : "2022-04-06T16:54:15+00:00"
+}
+EOF

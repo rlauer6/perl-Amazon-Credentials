@@ -14,7 +14,7 @@ use Data::Dumper;
 
 use_ok('Amazon::Credentials');
 
-my $creds = Amazon::Credentials->new( imdsv2 => 1 );
+my $creds = Amazon::Credentials->new( order => 'role', imdsv2 => 1 );
 
 ok( $creds->get_imdsv2_token, 'imdsv2 - retrieved token' )
   or diag( Dumper $creds);

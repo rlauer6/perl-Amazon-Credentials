@@ -84,7 +84,7 @@ subtest 'logging' => sub {
     }
   );
 
-  ok( $stderr_from =~ /default logger/, 'use default logger' )
+  ok( $stderr_from =~ /Amazon::Credentials::Logger/, 'use default logger' )
     or diag($stderr_from);
 
   $stderr_from = stderr_from(

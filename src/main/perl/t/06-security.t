@@ -34,7 +34,7 @@ BEGIN {
   use_ok('Amazon::Credentials');
 } ## end BEGIN
 
-my $home = mkdtemp("amz-credentials-XXXXX");
+my $home = mkdtemp('amz-credentials-XXXXX');
 
 my $credentials_file = eval {
   mkdir "$home/.aws";
@@ -49,10 +49,10 @@ aws_secret_access_key=foo-aws-secret-access-key
 
 eot
   close $fh;
-  "$home/.aws/credentials";
+  return "$home/.aws/credentials";
 };
 
-$ENV{HOME}        = "$home";
+$ENV{HOME}        = $home;
 $ENV{AWS_PROFILE} = undef;
 
 my $stderr_from;
@@ -72,7 +72,11 @@ subtest 'insecure => 1' => sub {
 
   $stderr_from = stderr_from(
     sub {
-      Amazon::Credentials->new( profile => 'foo', debug => 1, insecure => 1 );
+      Amazon::Credentials->new(
+        profile  => 'foo',
+        debug    => 1,
+        insecure => 1
+      );
     }
   );
 
@@ -90,7 +94,11 @@ subtest 'insecure => 2' => sub {
   $stderr_from = stderr_from(
     sub {
       Amazon::Credentials->new(
-        { profile => 'foo', debug => 1, insecure => 2 } );
+        { profile  => 'foo',
+          debug    => 1,
+          insecure => 2
+        }
+      );
     }
   );
 

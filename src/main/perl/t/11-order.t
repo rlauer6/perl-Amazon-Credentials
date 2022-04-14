@@ -1,9 +1,11 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 5;
 
 use Data::Dumper;
+use English qw{ -no_match_vars };
+
 use File::Temp qw/:mktemp/;
 use File::Path;
 
@@ -46,27 +48,22 @@ my $creds = Amazon::Credentials->new(
   }
 );
 
-ok( ref($creds), 'find credentials' );
+ok( ref $creds, 'found credentials in file' );
 
 is( $creds->get_aws_access_key_id,
   'bar-aws-access-key-id', 'default profile' );
 
-is( $creds->get_region, 'us-east-1', 'default region' );
+$creds = eval {
+  return Amazon::Credentials->new(order => 'blah');
+};
 
-$creds = Amazon::Credentials->new(
-  { profile => 'bar',
-    order   => [qw/file/],
-    region  => 'foo',
-  }
-);
+like($EVAL_ERROR, qr/invalid/, 'only valid locations');
 
-is( $creds->get_aws_access_key_id,
-  'bar-aws-access-key-id', 'retrieve profile' );
+$creds = eval {
+  return Amazon::Credentials->new(order => { this => 'blah' });
+};
 
-is( $creds->get_region, 'us-east-1', 'region' );
-
-is( $creds->get_source, '.aws/credentials' )
-  or diag( Dumper [$creds] );
+like($EVAL_ERROR, qr/array ref/, 'only array refs or scalars');
 
 END {
   eval { rmtree($home) if $home; };

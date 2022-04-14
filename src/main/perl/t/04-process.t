@@ -48,12 +48,14 @@ my $creds = Amazon::Credentials->new(
 
 ok( ref $creds, 'find credentials' );
 
-is( $creds->get_aws_access_key_id, 'aws-access-key-id', 'aws_access_key_id' );
+like( $creds->get_aws_access_key_id, qr/^[A-Z0-9]+$/, 'aws_access_key_id' );
 
-is( $creds->get_aws_secret_access_key,
-  'aws-secret-access-key', 'aws_secret_access_key' );
+like( $creds->get_aws_secret_access_key,
+  qr/^[a-zA-Z0-9\+\/]+$/, 'aws_secret_access_key' )
+  or diag( Dumper $creds);
 
-is( $creds->get_region, 'us-west-2', 'region' );
+like( $creds->get_token, qr/^[a-zA-Z0-9\+\/=]+$/xsm, 'token' )
+  or diag( Dumper $creds);
 
 END {
   eval { rmtree($home) if $home; };

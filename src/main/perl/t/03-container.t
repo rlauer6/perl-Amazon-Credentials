@@ -32,6 +32,23 @@ BEGIN {
   use_ok('Amazon::Credentials');
 } ## end BEGIN
 
+use constant {
+  ISO_8601_FORMAT => '%Y-%m-%dT%H:%M:%SZ',
+  TRUE            => 1,
+  FALSE           => 0,
+  FIVE_MINUTES    => 5 * 60,
+};
+
+sub format_time {
+  my ($time) = @_;
+
+  return time2str( ISO_8601_FORMAT, time + $time, 'GMT' );
+}
+
+# +-------------------------+
+# | MAIN SCRIPT STARTS HERE |
+# +-------------------------+
+
 # could be anything...but must exist
 $ENV{AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} = 'blah';
 $ENV{ECS_CONTAINER_METADATA_URI_V4}          = 'blah';
@@ -41,8 +58,7 @@ my %container_creds;
 $container_creds{AccessKeyId}     = 'buz-aws-access-key-id';
 $container_creds{SecretAccessKey} = 'buz-aws-secret-access-key';
 $container_creds{Token}           = 'buz';
-$container_creds{Expiration}
-  = time2str( "%Y-%m-%dT%H:%M:%SZ", time + 5 + ( 5 * 60 ), "GMT" );
+$container_creds{Expiration}      = format_time( 5 + FIVE_MINUTES );
 
 my $response = JSON::PP->new->utf8->pretty->encode( \%container_creds );
 
@@ -53,11 +69,10 @@ my %expected_creds;
 $expected_creds{aws_access_key_id}     = 'buz-aws-access-key-id';
 $expected_creds{aws_secret_access_key} = 'buz-aws-secret-access-key';
 $expected_creds{token}                 = 'buz';
-$expected_creds{expiration}
-  = time2str( "%Y-%m-%dT%H:%M:%SZ", time + 5 + ( 5 * 60 ), "GMT" );
-$expected_creds{profile}   = undef;
-$expected_creds{source}    = 'IAM';
-$expected_creds{container} = 'ECS';
+$expected_creds{expiration}            = format_time( 5 + FIVE_MINUTES );
+$expected_creds{profile}               = undef;
+$expected_creds{source}                = 'IAM';
+$expected_creds{container}             = 'ECS';
 
 {
   no strict 'refs';
@@ -66,19 +81,31 @@ $expected_creds{container} = 'ECS';
 }
 
 my $creds = Amazon::Credentials->new(
-  { order => \@order, debug => $ENV{DEBUG} ? 1 : 0 } );
+  { order => \@order,
+    debug => $ENV{DEBUG} ? 1 : 0,
+  }
+);
+
 isa_ok( $creds, 'Amazon::Credentials' );
 
 ok( ref($creds), 'find credentials - container' );
 
+my @credential_keys = qw{
+  aws_access_key_id
+  aws_secret_access_key
+  token
+  expiration
+  profile
+  source
+  container
+};
+
 my %returned_creds;
 
 if ( ref($creds) ) {
-  foreach my $k (
-    qw/aws_access_key_id aws_secret_access_key token expiration profile source container/
-  ) {
+  foreach my $k (@credential_keys) {
     $returned_creds{$k} = $creds->can("get_$k")->($creds);
   }
-} ## end if ( ref($creds) )
+}
 
 is_deeply( \%expected_creds, \%returned_creds, 'got expected creds' );

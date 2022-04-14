@@ -36,7 +36,7 @@ dist_noinst_DATA = \
     get-creds-from-process
 
 CLEANFILES = \
-   $(check_SCRIPTS) \
+   prove.sh \
    prove.sh.trs \
    prove.sh.log \
    test-suite.log \
