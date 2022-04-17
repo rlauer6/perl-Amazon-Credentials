@@ -6,6 +6,7 @@ project:
 pm_module: Amazon::Credentials
 dependencies:
     path: requires
+    core_modules: no
 path:
   pm_module: ../src/main/perl/lib
   tests: ../src/main/perl/t

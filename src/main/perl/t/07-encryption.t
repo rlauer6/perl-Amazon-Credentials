@@ -8,8 +8,16 @@ use File::Path;
 use File::Temp qw/:mktemp/;
 use JSON::PP;
 use MIME::Base64;
+use Test::More;
 
-use Test::More tests => 14;
+my $has_crypt_cbc = eval { require Crypt::CBC };
+
+if ( !$has_crypt_cbc ) {
+  plan skip_all => 'Crypt::CBC unavilable';
+}
+else {
+  plan tests => 14;
+}
 
 BEGIN {
   {
@@ -31,10 +39,7 @@ BEGIN {
   mark_as_loaded(HTTP::Response);
   mark_as_loaded(LWP::UserAgent);
 
-  use_ok('Amazon::Credentials');
 } ## end BEGIN
-
-Amazon::Credentials->import('create_passkey');
 
 sub my_encrypt {
   my ( $str, $passkey ) = @_;
@@ -129,6 +134,7 @@ sub check_cipher {
 
   my $cipher = Crypt::CBC->new(
     '-pass'        => $passkey,
+    '-key'         => $passkey,
     '-nodeprecate' => 1,
     '-cipher'      => $cipher_name,
   );
@@ -150,6 +156,14 @@ sub check_cipher {
     )
     or diag( Dumper [ $passkey, $encrypted_access_key_id, $access_key_id ] );
 } ## end sub check_cipher
+
+# +------------------ +
+# | TESTS START HERE |
+# +------------------ +
+
+use_ok('Amazon::Credentials');
+
+Amazon::Credentials->import('create_passkey');
 
 my $home = mkdtemp('amz-credentials-XXXXX');
 
@@ -180,11 +194,12 @@ my %unencrypted_creds = (
 # this test must be run first...
 subtest 'obfuscation without Crypt::CBC' => sub {
   {
-    use Devel::Hide qw{ -lexically -quiet Crypt::CBC };
+    # use Devel::Hide qw{ -lexically  -quiet Crypt::CBC };
+    eval "use Test::Without::Module qw{ Crypt::CBC };";
 
     my $credentials = Amazon::Credentials->new(
       profile    => 'foo',
-      encryption => 1
+      encryption => 1,
     );
 
     ok( !$credentials->get_encryption,
@@ -205,6 +220,8 @@ subtest 'obfuscation without Crypt::CBC' => sub {
     check_credentials( $credentials, \%unencrypted_creds, 'obfuscation' )
       or diag( Dumper [$credentials] );
   }
+
+  eval q{ no Test::Without::Module qw{ Crypt::CBC }; };
 };
 
 subtest 'decrypt' => sub {
@@ -359,7 +376,7 @@ subtest 'do not cache credentials' => sub {
 
 subtest 'get passkey from sub' => sub {
 
-  my $passkey = Amazon::Credentials::create_passkey;
+  my $passkey = create_passkey();
 
   my $credentials = eval {
     return Amazon::Credentials->new(
@@ -397,8 +414,7 @@ subtest 'rotate credentials w/new passkey' => sub {
     $credentials->get__access_key_id
   );
 
-  my $new_passkey
-    = $credentials->rotate_credentials(Amazon::Credentials::create_passkey);
+  my $new_passkey = $credentials->rotate_credentials( create_passkey() );
 
   ok( $new_passkey ne $passkey, 'passkey rotated' )
     or diag(

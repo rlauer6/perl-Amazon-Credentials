@@ -1,6 +1,21 @@
+Sun Apr 17 09:18:12 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.2 - unit test fixes]:
+	* VERSION: bump
+	* src/main/perl/t/07-encryption.t
+	- use Test::Without::Module instead of Devel::Hide
+	- skip all tests if no Crypt::CBC available
+	- use -key or -pass to support older Crypt::CBC modules
+	* src/main/perl/t/01-credentials.t: bail on error
+	* src/main/perl/lib/Amazon::Credentials.pm.in
+	- pod tweaks
+	(_crypt): use -key -pass to support older Crypt::CBC versions
+	* cpan/requires: new
+	* cpan/buildspec.yml: core_modules: no
+
 Thu Apr 14 09:48:53 2022  Rob Lauer  <rlauer6@comcast.net>
 
-	[1.1.1 - pod fixes]
+	[1.1.1 - pod fixes]:
 	* NEWS.md: update
 	* src/main/perl/lib/Amazon/Credentials.pm.in
 	- pod fixes

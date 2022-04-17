@@ -4,6 +4,8 @@ use warnings;
 use Test::More tests => 7;
 
 use Data::Dumper;
+use English qw{ -no_match_vars };
+
 use File::Temp qw/:mktemp/;
 use File::Path;
 
@@ -40,13 +42,16 @@ eot
 $ENV{HOME}        = $home;
 $ENV{AWS_PROFILE} = undef;
 
-my $creds = Amazon::Credentials->new(
-  { order => [qw/file/],
-    debug => $ENV{DEBUG} ? 1 : 0,
-  }
-);
+my $creds = eval {
+  Amazon::Credentials->new(
+    { order => [qw/file/],
+      debug => $ENV{DEBUG} ? 1 : 0,
+    }
+  );
+};
 
-ok( ref($creds), 'find credentials' );
+ok( $creds && ref($creds), 'find credentials' )
+  or BAIL_OUT($EVAL_ERROR);
 
 is( $creds->get_aws_access_key_id,
   'bar-aws-access-key-id', 'default profile' );

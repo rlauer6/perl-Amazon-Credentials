@@ -7,6 +7,18 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.2 (2022-04-17)
+
+## Enhancements
+
+* support older versions of Crypt::CBC by setting -key or -pass
+* pod tweaks/corrections
+
+## Fixes
+
+* unit test fixes when no Crypt::CBC available
+* requires List::Util 1.5
+
 # perl-Amazon-Credentials 1.1.1 (2022-04-14)
 
 ## Enhancements
