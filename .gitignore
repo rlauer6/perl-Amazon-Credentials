@@ -1,6 +1,5 @@
 container-test/*
 cpan/provides
-cpan/test-requires
 **/*.1man
 **/*.pm
 autotools/*

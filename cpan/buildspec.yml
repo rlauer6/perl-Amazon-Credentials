@@ -5,7 +5,8 @@ project:
     mailto: rlauer6@comcast.net
 pm_module: Amazon::Credentials
 dependencies:
-    path: requires
+    requires: requires
+    test_requires: test-requires
     core_modules: no
 path:
   pm_module: ../src/main/perl/lib

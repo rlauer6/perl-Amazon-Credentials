@@ -1,0 +1,16 @@
+constant 1.33
+Cwd 3.40
+Data::Dumper 2.145
+Date::Format 2.24
+English 1.05
+File::Path 2.09
+File::Temp 0.2301
+JSON::PP 4.07
+Log::Log4perl 1.40
+Log::Log4perl::Level 0
+MIME::Base64 3.13
++Module::Loaded 0
+strict 1.07
+Test::More 1.001014
+Test::Output 1.031
+warnings 1.13

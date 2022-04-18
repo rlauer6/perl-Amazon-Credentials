@@ -9,10 +9,10 @@ cpan: buildspec.yml
 	$(CPAN_DIST_MAKER) -b $<
 
 	if test -n "$$(echo $(package_version) | grep '\-')"; then \
-		echo $$package_version; \
-		package_version=$(package_version); package=$(package); \
-		tarball=$${package##perl-}-$${package_version%%-*}.tar.gz; \
-		test -e "$$tarball" && mv $$tarball $${package##perl-}-$$package_version.tar.gz; \
+	  echo $$package_version; \
+	  package_version=$(package_version); package=$(package); \
+	  tarball=$${package##perl-}-$${package_version%%-*}.tar.gz; \
+	  test -e "$$tarball" && mv $$tarball $${package##perl-}-$$package_version.tar.gz; \
 	fi
 
 .PHONY: cpan
@@ -21,4 +21,4 @@ dist_noinst_DATA = buildspec.yml
 
 clean-local:
 	rm -f *.tar.gz
-	rm -f provides test-requires
+	rm -f provides
