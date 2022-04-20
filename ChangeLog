@@ -1,3 +1,20 @@
+Wed Apr 20 14:55:50 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.4 - missing unit tests]:
+	* VERSION: bump
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- print_error, raise_error, error
+	- use our instead of use vars
+	- re-arrange subs in logical sections
+	- some refactoring for code clarity (formatting)
+	- use decode_json, encode_json
+	- minor refactoring, more constants
+	(get_creds_from_env):new
+	(set_credentials)
+	- respect print_error, raise_error setting
+	* src/main/perl/t/12-error.t: new
+	* .gitignore: +prove.sh.*, test-suite.log
+
 Mon Apr 18 14:41:29 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.3 - unit test fixes]:
