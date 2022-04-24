@@ -6,41 +6,13 @@ use Test::Output;
 
 use Data::Dumper;
 use English qw{ -no_match_vars };
-
-use File::Temp qw/:mktemp/;
-use File::Path;
+use UnitTestSetup;
 
 BEGIN {
   use_ok('Amazon::Credentials');
 }
 
-my $home = mkdtemp('amz-credentials-XXXXX');
-
-my $credentials_file = eval {
-  mkdir "$home/.aws";
-
-  open( my $fh, '>', "$home/.aws/credentials" )
-    or BAIL_OUT('could not create temporary credentials file');
-
-  print $fh <<eot;
-[default]
-profile = foo
-
-[foo]
-aws_access_key_id=foo-aws-access-key-id
-aws_secret_access_key=foo-aws-secret-access-key
-
-[profile boo]
-credential_process = some_process_that_does_not_exist
-region = us-west-2
-
-eot
-  close $fh;
-  return "$home/.aws/credentials";
-};
-
-$ENV{HOME}        = $home;
-$ENV{AWS_PROFILE} = undef;
+init_test(test => '12-error.t');
 
 my $creds;
 
@@ -88,6 +60,3 @@ $creds = eval {
 like($EVAL_ERROR, qr/could not open/, 'bad process')
   or diag(Dumper ["$EVAL_ERROR"]);
 
-END {
-  eval { rmtree($home) if $home; };
-}

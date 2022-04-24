@@ -7,6 +7,17 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.6 (2022-04-24)
+
+## Enhancements
+
+* refactoring of unit tests
+
+## Fixes
+
+* unit tests on some FreeBSD systems were failing because of missing
+  dependencies
+
 # perl-Amazon-Credentials 1.1.4 (2022-04-20)
 
 ## Enhancements

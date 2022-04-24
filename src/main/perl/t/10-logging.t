@@ -5,11 +5,8 @@ use Test::More;
 use Test::Output;
 
 use Data::Dumper;
-use Date::Format;
-use File::Path;
 use JSON::PP;
-
-use File::Temp qw/:mktemp/;
+use UnitTestSetup;
 
 BEGIN {
   use English qw{ -no_match_vars };
@@ -49,26 +46,7 @@ END_OF_TEXT
   use_ok('Amazon::Credentials');
 } ## end BEGIN
 
-my $home = mkdtemp("amz-credentials-XXXXX");
-
-my $credentials_file = eval {
-  mkdir "$home/.aws";
-
-  open( my $fh, '>', "$home/.aws/credentials" )
-    or BAIL_OUT("could not create temporary credentials file");
-
-  print $fh <<eot;
-[foo]
-aws_access_key_id=foo-aws-access-key-id
-aws_secret_access_key=foo-aws-secret-access-key
-
-eot
-  close $fh;
-  "$home/.aws/credentials";
-};
-
-$ENV{HOME}        = "$home";
-$ENV{AWS_PROFILE} = undef;
+init_test;
 
 my $stderr_from;
 
@@ -101,7 +79,3 @@ subtest 'logging' => sub {
   ok( $stderr_from =~ /using Log::Log4perl::Logger/, 'use Log::Log4perl' )
     or diag($stderr_from);
 };
-
-END {
-  eval { rmtree($home) if $home; };
-}

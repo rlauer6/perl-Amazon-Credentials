@@ -5,5 +5,7 @@ use Test::More tests => 1;
 use Data::Dumper;
 
 BEGIN {
-  use_ok('Amazon::Credentials');
+  use_ok('Amazon::Credentials')
+    or BAIL_OUT();
 }
+

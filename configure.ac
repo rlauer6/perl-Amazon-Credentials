@@ -80,7 +80,7 @@ AC_SUBST([do_subst_command])
 AC_CONFIG_AUX_DIR([autotools])
 AC_CONFIG_MACRO_DIR([autotools])
 
-AM_INIT_AUTOMAKE([-Wall -Werror foreign tar-ustar])
+AM_INIT_AUTOMAKE([-Wall foreign tar-ustar])
 
 AC_REQUIRE_AUX_FILE([tap-driver.sh])
 

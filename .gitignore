@@ -1,7 +1,7 @@
 container-test/*
 cpan/provides
 **/*.1man
-**/*.pm
+src/main/perl/lib/**/*.pm
 autotools/*
 aclocal.m4
 configure

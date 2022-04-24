@@ -13,4 +13,5 @@ MIME::Base64 3.13
 strict 1.07
 Test::More 1.001014
 Test::Output 1.031
+Test::Without::Module 0
 warnings 1.13

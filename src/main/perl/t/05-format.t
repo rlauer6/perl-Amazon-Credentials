@@ -5,10 +5,8 @@ use Test::More tests => 5;
 
 use Data::Dumper;
 use Date::Format;
-use File::Path;
 use JSON::PP;
-
-use File::Temp qw/:mktemp/;
+use UnitTestSetup;
 
 BEGIN {
   {
@@ -33,26 +31,7 @@ BEGIN {
   use_ok('Amazon::Credentials');
 } ## end BEGIN
 
-my $home = mkdtemp('amz-credentials-XXXXX');
-
-my $credentials_file = eval {
-  mkdir "$home/.aws";
-
-  open( my $fh, '>', "$home/.aws/credentials" )
-    or BAIL_OUT("could not create temporary credentials file");
-
-  print $fh <<eot;
-[foo]
-aws_access_key_id=foo-aws-access-key-id
-aws_secret_access_key=foo-aws-secret-access-key
-
-eot
-  close $fh;
-  "$home/.aws/credentials";
-};
-
-$ENV{HOME}        = $home;
-$ENV{AWS_PROFILE} = undef;
+init_test;
 
 my $creds = Amazon::Credentials->new(
   { profile => 'foo',
@@ -113,7 +92,3 @@ subtest 'as_string' => sub {
     'JSON string AWS_SECRET_ACCESS_KEY'
   );
 };
-
-END {
-  eval { rmtree($home) if $home; };
-}

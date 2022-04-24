@@ -11,10 +11,8 @@ else {
 }
 
 use Data::Dumper;
-use Date::Format;
 use English qw{ -no_match_vars };
 
-use File::Path;
 use JSON::PP;
 
 use File::Temp qw/:mktemp/;

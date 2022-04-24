@@ -6,41 +6,15 @@ use Test::More tests => 7;
 use Data::Dumper;
 use English qw{ -no_match_vars };
 
-use File::Temp qw/:mktemp/;
-use File::Path;
+use UnitTestSetup;
 
 BEGIN {
   use_ok('Amazon::Credentials');
 }
 
-my $home = mkdtemp('amz-credentials-XXXXX');
+init_test;
 
-my $credentials_file = eval {
-  mkdir "$home/.aws";
-
-  open( my $fh, '>', "$home/.aws/credentials" )
-    or BAIL_OUT('could not create temporary credentials file');
-
-  print $fh <<eot;
-[default]
-profile = bar
-
-[foo]
-aws_access_key_id=foo-aws-access-key-id
-aws_secret_access_key=foo-aws-secret-access-key
-
-[bar]
-aws_access_key_id=bar-aws-access-key-id
-aws_secret_access_key=bar-aws-secret-access-key
-region = us-east-1
-
-eot
-  close $fh;
-  return "$home/.aws/credentials";
-};
-
-$ENV{HOME}        = $home;
-$ENV{AWS_PROFILE} = undef;
+print Dumper [ @ARGV, $PROGRAM_NAME ];
 
 my $creds = eval {
   Amazon::Credentials->new(
@@ -72,7 +46,3 @@ is( $creds->get_region, 'us-east-1', 'region' );
 
 is( $creds->get_source, '.aws/credentials' )
   or diag( Dumper [$creds] );
-
-END {
-  eval { rmtree($home) if $home; };
-}

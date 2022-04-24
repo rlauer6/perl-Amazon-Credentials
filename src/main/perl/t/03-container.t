@@ -5,7 +5,7 @@ use Test::More tests => 4;
 use JSON::PP;
 
 use Data::Dumper;
-use Date::Format;
+use UnitTestSetup;
 
 BEGIN {
   {
@@ -31,19 +31,6 @@ BEGIN {
 
   use_ok('Amazon::Credentials');
 } ## end BEGIN
-
-use constant {
-  ISO_8601_FORMAT => '%Y-%m-%dT%H:%M:%SZ',
-  TRUE            => 1,
-  FALSE           => 0,
-  FIVE_MINUTES    => 5 * 60,
-};
-
-sub format_time {
-  my ($time) = @_;
-
-  return time2str( ISO_8601_FORMAT, time + $time, 'GMT' );
-}
 
 # +-------------------------+
 # | MAIN SCRIPT STARTS HERE |

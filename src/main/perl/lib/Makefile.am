@@ -11,16 +11,22 @@ endif
 perl5libdir = @perl5libdir@
 ax_perl5_extra_includes_opt = @ax_perl5_extra_includes_opt@
 
-amazondir = $(perl5libdir)/Amazon
+PERLMODULES =
 
-PERLMODULES = \
+AMAZON_PERLMODULES = \
     Amazon/Credentials.pm.in
 
 GPERLMODULES = $(PERLMODULES:.pm.in=.pm)
 
-amazon_DATA = $(GPERLMODULES)
+GAMAZON_PERLMODULES = $(AMAZON_PERLMODULES:.pm.in=.pm)
 
-dist_noinst_DATA = $(PERLMODULES)
+amazondir = $(perl5libdir)/Amazon
+
+amazon_DATA = $(GAMAZON_PERLMODULES:pm.in=.pm)
+
+dist_noinst_DATA = \
+    $(PERLMODULES) \
+    $(AMAZON_PERLMODULES)
 
 @do_subst_command@
 
@@ -35,7 +41,7 @@ PERLINCLUDE = \
    $(PERL5_EXTRA_INCLUDES) \
    -I $(perl5libdir) 
 
-$(GPERLMODULES): % : %.in 
+%.pm: %.pm.in
 	test -d "$$(dirname "$@")" || $(INSTALL) -d "$$(dirname "$@")"
 	$(do_subst) $< > $@
 	$(perlwc) $(PERLINCLUDE)  $@ || { ret=$$?; rm $@ && exit $$?; }
@@ -43,5 +49,6 @@ $(GPERLMODULES): % : %.in
 all:
 
 CLEANFILES = \
-   $(GPERLMODULES)
+   $(GPERLMODULES) \
+   $(GAMAZON_PERLMODULES)
 

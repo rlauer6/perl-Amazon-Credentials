@@ -1,4 +1,33 @@
-Wed Apr 20 14:55:50 2022  Rob Lauer  <rlauer6@comcast.net>
+Sun Apr 24 06:51:16 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.6 - more unit test fun]:
+	* VERSION: bump
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(_init_encryption): test for Crypt::Cipher::AES too!
+	* .gitignore: just *.pm in src/main/perl/lib
+	* bootstrap: rebuild on version bump
+	* src/main/perl/lib/Amazon/Credentials/UnitTests.pm.in: new
+	* configure.ac: do not treat warnings as errors (pattern rule)
+	* cpan/test-requires: add Test::Without::Module
+	* src/main/perl/UnitTestSetup.pm: new
+	* src/main/perl/t/00-credentials.t: use UnitTestSetup
+	* src/main/perl/t/01-credentials.t: likewise
+	* src/main/perl/t/02-credentials.t: likewise
+	* src/main/perl/t/03-container.t: likewise
+	* src/main/perl/t/04-process.t: likewise
+	* src/main/perl/t/05-format.t: likewise
+	* src/main/perl/t/06-security.t: likewise
+	* src/main/perl/t/07-encryption.t: likewise
+	* src/main/perl/t/09-live-credentials.t: likewise
+	* src/main/perl/t/10-logging.t: likewise
+	* src/main/perl/t/11-order.t: likewise
+	* src/main/perl/t/12-error.t: likewise
+
+Sun Apr 24 05:01:18 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.5 - CPAN only release, no changes]:
+
+Wed Apr magit20 14:55:50 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.4 - missing unit tests]:
 	* VERSION: bump

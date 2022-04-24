@@ -4,13 +4,15 @@ use warnings;
 use Data::Dumper;
 use Date::Format;
 use English qw{ -no_match_vars };
-use File::Path;
-use File::Temp qw/:mktemp/;
 use JSON::PP;
 use MIME::Base64;
 use Test::More;
+use UnitTestSetup;
 
-my $has_crypt_cbc = eval { require Crypt::CBC };
+my $has_crypt_cbc = eval {
+  require Crypt::CBC;
+  require Crypt::Cipher::AES;
+};
 
 if ( !$has_crypt_cbc ) {
   plan skip_all => 'Crypt::CBC unavilable';
@@ -41,7 +43,9 @@ BEGIN {
 
 } ## end BEGIN
 
+########################################################################
 sub my_encrypt {
+########################################################################
   my ( $str, $passkey ) = @_;
   return if !$str;
 
@@ -59,7 +63,9 @@ sub my_encrypt {
   return \@encrypted_str;
 } ## end sub my_encrypt
 
+########################################################################
 sub my_decrypt {
+########################################################################
   my ( $str, $passkey ) = @_;
   return if !$str;
 
@@ -80,7 +86,9 @@ sub my_decrypt {
   return $str;
 } ## end sub my_decrypt
 
+########################################################################
 sub check_credentials {
+########################################################################
   my ( $credentials, $unencrypted_creds, $test ) = @_;
 
   $test = $test // q{};
@@ -115,7 +123,9 @@ sub check_credentials {
   return !$retval;
 } ## end sub check_credentials
 
+########################################################################
 sub check_cipher {
+########################################################################
   my ( $cipher_name, $test ) = @_;
 
   my $credentials = Amazon::Credentials->new(
@@ -161,41 +171,25 @@ sub check_cipher {
 # | TESTS START HERE |
 # +------------------ +
 
+init_test;
+
 use_ok('Amazon::Credentials');
 
 Amazon::Credentials->import('create_passkey');
-
-my $home = mkdtemp('amz-credentials-XXXXX');
-
-my $credentials_file = eval {
-  mkdir "$home/.aws";
-
-  open( my $fh, '>', "$home/.aws/credentials" )
-    or BAIL_OUT("could not create temporary credentials file");
-
-  print $fh <<eot;
-[foo]
-aws_access_key_id=foo-aws-access-key-id
-aws_secret_access_key=foo-aws-secret-access-key
-
-eot
-  close $fh;
-  return "$home/.aws/credentials";
-};
-
-$ENV{HOME}        = $home;
-$ENV{AWS_PROFILE} = undef;
 
 my %unencrypted_creds = (
   access_key_id     => 'foo-aws-access-key-id',
   secret_access_key => 'foo-aws-secret-access-key',
 );
 
-# this test must be run first...
+# !! this test must be run first !!
+########################################################################
 subtest 'obfuscation without Crypt::CBC' => sub {
+########################################################################
+
   {
     # use Devel::Hide qw{ -lexically  -quiet Crypt::CBC };
-    eval "use Test::Without::Module qw{ Crypt::CBC };";
+    eval "use Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES };";
 
     my $credentials = Amazon::Credentials->new(
       profile    => 'foo',
@@ -221,10 +215,13 @@ subtest 'obfuscation without Crypt::CBC' => sub {
       or diag( Dumper [$credentials] );
   }
 
-  eval q{ no Test::Without::Module qw{ Crypt::CBC }; };
+  eval q{ no Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES }; };
 };
 
+########################################################################
 subtest 'decrypt' => sub {
+########################################################################
+
   my $credentials = Amazon::Credentials->new( profile => 'foo', );
 
   ok( defined $credentials->get_passkey, 'passkey created' );
@@ -235,7 +232,9 @@ subtest 'decrypt' => sub {
     or diag( Dumper [$credentials] );
 };
 
+########################################################################
 subtest 'rotate credentials' => sub {
+########################################################################
 
   my $credentials
     = Amazon::Credentials->new( profile => 'foo', encryption => 1 );
@@ -250,7 +249,10 @@ subtest 'rotate credentials' => sub {
     or diag( Dumper [$credentials] );
 };
 
+########################################################################
 subtest 'rotate credentials with custom passkey' => sub {
+########################################################################
+
   our $passkey = create_passkey();
 
   sub get_passkey {
@@ -320,7 +322,10 @@ subtest 'rotate credentials with custom passkey' => sub {
     or diag( Dumper [$credentials] );
 };
 
+########################################################################
 subtest 'custom encryption/decryption' => sub {
+########################################################################
+
   my $credentials = Amazon::Credentials->new(
     profile => 'foo',
     encrypt => \&my_encrypt,
@@ -332,7 +337,10 @@ subtest 'custom encryption/decryption' => sub {
     or diag( Dumper [$credentials] );
 };
 
+########################################################################
 subtest 'custom encryption/decryption setting' => sub {
+########################################################################
+
   # set only decrypt or encrypt
   foreach my $sub (qw{ encrypt decrypt }) {
     my $credentials = eval {
@@ -348,7 +356,10 @@ subtest 'custom encryption/decryption setting' => sub {
   } ## end foreach my $sub (qw{ encrypt decrypt })
 };
 
+########################################################################
 subtest 'cache credentials' => sub {
+########################################################################
+
   my $credentials = eval { return Amazon::Credentials->new( profile => 'foo',
       cache => 1, ); };
 
@@ -361,7 +372,10 @@ subtest 'cache credentials' => sub {
 
 };
 
+########################################################################
 subtest 'do not cache credentials' => sub {
+########################################################################
+
   my $credentials = eval { return Amazon::Credentials->new( profile => 'foo',
       cache => 0, ); };
 
@@ -374,7 +388,9 @@ subtest 'do not cache credentials' => sub {
 
 };
 
+########################################################################
 subtest 'get passkey from sub' => sub {
+########################################################################
 
   my $passkey = create_passkey();
 
@@ -389,14 +405,18 @@ subtest 'get passkey from sub' => sub {
     );
   };
 
-  ok( $credentials->get_encryption, 'encryption enabled' );
+  ok( $credentials->get_encryption, 'encryption enabled' )
+    or diag( Dumper [$credentials] );
 
   check_credentials( $credentials, \%unencrypted_creds, )
     or diag( Dumper [$credentials] );
 
 };
 
+########################################################################
 subtest 'rotate credentials w/new passkey' => sub {
+########################################################################
+
   my $passkey = 'abra cadabra ala kazam!';
 
   my $credentials = eval {
@@ -447,7 +467,10 @@ subtest 'rotate credentials w/new passkey' => sub {
 
 };
 
+########################################################################
 subtest 'token encryption' => sub {
+########################################################################
+
   my $credentials = Amazon::Credentials->new(
     aws_access_key_id     => 'foo',
     aws_secret_access_key => 'bar',
@@ -470,8 +493,14 @@ subtest 'token encryption' => sub {
     or diag( Dumper [$credentials] );
 };
 
+########################################################################
 subtest 'use Crypt::CBC' => sub {
-  eval { require Crypt::CBC; };
+########################################################################
+
+  eval {
+    require Crypt::CBC;
+    require Crypt::Cipher::AES;
+  };
 
   if ($EVAL_ERROR) {
     plan skip_all => $EVAL_ERROR;
@@ -480,7 +509,10 @@ subtest 'use Crypt::CBC' => sub {
   check_cipher( '', 'default cipher' );
 };
 
+########################################################################
 subtest 'use custom cipher' => sub {
+########################################################################
+
   my $cipher_name = $ENV{AMAZON_CREDENTIAL_TEST_CIPHER} || 'Crypt::Blowfish';
 
   eval "require $cipher_name;";
@@ -491,7 +523,3 @@ subtest 'use custom cipher' => sub {
 
   check_cipher( $cipher_name, 'custom cipher ' . $cipher_name );
 };
-
-END {
-  eval { rmtree($home) if $home; };
-}
