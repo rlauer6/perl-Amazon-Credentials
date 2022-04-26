@@ -18,7 +18,6 @@ use constant {
   FIVE_MINUTES    => 5 * 60,
 };
 
-
 caller() or __PACKAGE__->main();
 
 ########################################################################
@@ -27,7 +26,7 @@ sub format_time {
   my ($time) = @_;
 
   return time2str( ISO_8601_FORMAT, time + $time, 'GMT' );
-}
+} ## end sub format_time
 
 ########################################################################
 sub read_config {
@@ -130,16 +129,22 @@ __DATA__
 [default]
 profile = bar
 
-[foo]
-aws_access_key_id=foo-aws-access-key-id
-aws_secret_access_key=foo-aws-secret-access-key
-region = us-east-1
-  
 [bar]
 aws_access_key_id=bar-aws-access-key-id
 aws_secret_access_key=bar-aws-secret-access-key
 region = us-east-1
 
+  
+[foo]
+aws_access_key_id=foo-aws-access-key-id
+aws_secret_access_key=foo-aws-secret-access-key
+region = us-east-1
+
+[buz]
+aws_access_key_id=buz-aws-access-key-id
+aws_secret_access_key=buz-aws-secret-access-key
+region = us-east-1
+  
 --- 04-process.t ---
 [profile foo]
 credential_process = @process@

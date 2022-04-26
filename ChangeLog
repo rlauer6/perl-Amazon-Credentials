@@ -1,3 +1,13 @@
+Mon Apr 25 09:55:14 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.7 - unit test fails on perl >= 5.17]:
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(safe_dumper): less greedy to get all instances of credentials
+	(get_creds_from_env): @ENV{@env}
+	* src/main/perl/UnitTestSetup.pm
+	(__DATA__): add more profiles
+	* src/main/perl/t/13-env.t
+
 Sun Apr 24 06:51:16 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.6 - more unit test fun]:
