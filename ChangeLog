@@ -1,3 +1,10 @@
+Thu Apr 28 18:04:16 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.8 - new README.md]:
+	* README-BUILD.md: renamed from README.md
+	* README.md: new
+	* Makefile.am: build rule for above
+
 Mon Apr 25 09:55:14 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.7 - unit test fails on perl >= 5.17]:
