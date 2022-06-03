@@ -45,7 +45,7 @@ sub read_config {
       $config_name = $1;
       $configs{$1} = [];
       next;
-    }
+    } ## end if ( $line =~ /^--- (.*) ---$/)
 
     push @{ $configs{$config_name} }, $line;
   } ## end while ( my $line = <$fh> )
@@ -87,6 +87,25 @@ sub create_credentials_file {
 } ## end sub create_credentials_file
 
 ########################################################################
+sub create_config_file {
+########################################################################
+  my ($home) = @_;
+
+  if ( !-d "$home/.aws" ) {
+    mkdir "$home/.aws";
+  } ## end if ( !-d "$home/.aws" )
+
+  open( my $fh, '>', "$home/.aws/config" )
+    or BAIL_OUT('could not create temporary config file');
+
+  print {$fh} join "\n", qw{[default] region=us-east-2};
+
+  close $fh;
+
+  return "$home/.aws/config";
+} ## end sub create_config_file
+
+########################################################################
 sub create_home_dir {
 ########################################################################
   my ($cleanup) = @_;
@@ -103,13 +122,16 @@ sub init_test {
 ########################################################################
   my (%args) = @_;
 
-  $ENV{'AWS_PROFILE'} = $args{'profile'} || 'default';
+  $ENV{'AWS_PROFILE'} = $args{'profile'} // 'default';
 
   my $credentials = read_config( *DATA, $args{'test'} // '01-credentials.t' );
 
   my $home = create_home_dir( $args{'cleanup'} // 1 );
 
-  return create_credentials_file( $home, $credentials, $args{'vars'} );
+  create_credentials_file( $home, $credentials, $args{'vars'} );
+  create_config_file($home);
+
+  return $home;
 } ## end sub init_test
 
 sub main {

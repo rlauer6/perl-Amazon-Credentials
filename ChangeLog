@@ -1,3 +1,24 @@
+Fri Jun  3 12:45:37 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.9 - get region from .aws/config]:
+	* configure.ac: dependencies File::chdir, Test::Output
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- set default timeout for metadata to 2 from 3s
+	(get_default_region): read .aws/config if found for default region
+	(create_config_path): new
+	(get_region_from_config): new
+	(get_creds_from_ini_file)
+	- get region from [default] section regardless
+	* VERSION: bump
+	* README.md: version
+	* src/main/perl/UnitTestSetup.pm
+	(create_config_file): new
+	(init_test)
+	- set default if undef only
+	- create .aws/config w/us-east-2 as default region
+	* src/main/perl/t/13-env.t
+	- test for default region from.aws/config
+
 Thu Apr 28 18:04:16 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.8 - new README.md]:

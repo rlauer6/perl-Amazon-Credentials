@@ -19,7 +19,7 @@ meta-data_. See ["new"](#new).
 
 # VERSION
 
-This document reverse to verion @PACKAGE\_VERION@ of
+This document reverse to verion 1.1.9 of
 `Amazon::Credentials`.
 
 # METHODS AND SUBROUTINES

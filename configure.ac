@@ -137,6 +137,8 @@ ads_PERL_MODULE([LWP::UserAgent])
 ads_PERL_MODULE([POSIX::strptime])
 ads_PERL_MODULE([Scalar::Util])
 ads_PERL_MODULE([Time::Local])
+ads_PERL_MODULE([File::chdir])
+ads_PERL_MODULE([Test::Output])
 
 AC_CONFIG_FILES([
     Makefile
