@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib};
+
 use Test::More tests => 5;
 
 use UnitTestSetup;
@@ -9,7 +11,7 @@ use Cwd;
 
 BEGIN {
   use_ok('Amazon::Credentials');
-}
+} ## end BEGIN
 
 my $process = getcwd . '/get-creds-from-process';
 

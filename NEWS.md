@@ -7,6 +7,17 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.10 (2022-07-15)
+
+## Enhancements
+
+* removal of passkey from hash to decrease risk of credential leaks
+* addition of CLI access to credentials, including SSO credentials
+
+## Fixes
+
+* fix for exercising tests on Perls where '.' is not in path
+
 # perl-Amazon-Credentials 1.1.6 (2022-04-24)
 
 ## Enhancements

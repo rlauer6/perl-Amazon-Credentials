@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib qw{. lib};
+
 use Test::More tests => 5;
 
 use Data::Dumper;
@@ -9,7 +11,7 @@ use UnitTestSetup;
 
 BEGIN {
   use_ok('Amazon::Credentials');
-}
+} ## end BEGIN
 
 init_test;
 

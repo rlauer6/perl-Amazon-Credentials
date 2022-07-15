@@ -7,6 +7,10 @@ Amazon::Credentials - fetch Amazon credentials from file, environment or role
     my @order = qw{ env file container role };
     my $creds = Amazon::Credentials->new( { order => \@order } );
 
+CLI
+
+    amazon-credentials.sh --help
+
 # DESCRIPTION
 
 Class to find AWS credentials from either the environment,
@@ -17,9 +21,31 @@ to determine the order in which the class will look for credentials.
 The default order is _environent_, _file_, _container_, _instance
 meta-data_. See ["new"](#new).
 
+_NEW!_
+
+This class also implements a method for retrieving your SSO
+credentials. By default the method will set the environment variables
+`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
+`AWS_SESSION_TOKEN`. Subsequently call `Amazon::Credentials` to
+retrieve and use the credentials from the localized environment. If
+you only want to retrieve the credentials use `get_role_credentials`.
+
+    use Amazon::Credentials qw{set_sso_credentials get_role_credentials};
+
+    set_sso_credentials($role_name, $account_id, $region);
+    my $credentials = Amazon::Credentials->new;
+
+    my $credential = get_role_credentials(role_name  => $role_name,
+                                          account_id => $account_id,
+                                          region     => $region);
+
+or from the command line...
+
+    amazon-credentials.sh --role my-sso-role --account 01234567890
+
 # VERSION
 
-This document reverse to verion 1.1.9 of
+This document reverse to verion 1.1.10 of
 `Amazon::Credentials`.
 
 # METHODS AND SUBROUTINES
@@ -377,6 +403,43 @@ _Note that you should never have to call
 this method. If you call this method it will ignore your cache
 setting!_
 
+# SSO CREDENTIALS
+
+You can retrieve your SSO credentials after logging in using the
+`sso_set_credentials` or `get_role_credentials` methods.
+
+After logging in using your SSO credentials...
+
+    aws sso login
+
+...call one of the methods below to retrieve your credentials.
+
+## get\_role\_credentials
+
+    get_role_credentials( options )
+
+`options` is a hash (not reference) of options
+
+- role\_name => role name (required)
+- account\_id => AWS account id (required)
+
+    required
+
+    default: $ENV{AWS\_REGION}, $ENV{AWS\_DEFAULT\_REGION}, us-east-1
+
+## set\_sso\_credentials
+
+    set_sso_options(role-name, account-id, region)
+
+Calls `get_role_credentials` and set AWS credenital environment
+variables. Region is optional, all other parameters are required.
+
+    use Amazon::Credentials qw{set_sso_credentials}
+
+    set_sso_credentials(@ENV{qw{AWS_ROLE_NAME AWS_ACCOUNT_ID}});
+
+    my $credentials = Amazon::Credentials->new;
+
 # SETTERS/GETTERS
 
 All of the options described in the new method can be accessed by a
@@ -532,18 +595,18 @@ from exposure.
         By default the module will generate its own random passkey during
         initialization and use that to encrypt and decrypt the
         credentials. Obviously the passkey must be available for
-        `Amazon::Credentials` to decrypt the keys and thus it is stored with
-        the credentials which is less than ideal. To avoid storing the passkey
-        with the credentials, pass a reference to a subroutine that will
-        provide the passkey for encryption and decryption. You can even use
-        the same passkey generator that is used by `Amazon::Credentials`
-        (`create_passkey`).
+        `Amazon::Credentials` to decrypt the keys, however it is **NOT**
+        stored in the blessed hash reference that stores other data used by
+        the class. To avoid having the class know about your passkey at all, pass a
+        reference to a subroutine that will provide the passkey for encryption
+        and decryption. You can even use the same passkey generator that is
+        used by `Amazon::Credentials` (`create_passkey`).
 
-        The point here is to avoid storing credentials in the same object as
-        the credentials to minimize the likelihood of exposing your
-        credentials or your methods for encryption in logs...better but
-        not perfect. It's still possible to expose your passkey and your
-        credentials if you are not careful.
+        The point here is to avoid storing your passkey the same object as the
+        credentials to minimize the likelihood of exposing your credentials or
+        your methods for encryption in logs...better but not perfect. It's
+        still may be possible to expose your passkey and your credentials if
+        you are not careful.
 
             use Amazon::Credentials qw{ create_passkey };
 
@@ -663,6 +726,14 @@ a method to refresh them when they have.
       $credentials->refresh_token;
     }
 
+## Use Granular Credentials
+
+Consider the APIs that you are calling with these credentials. If all
+you need to do is access a bucket or a key within a bucket, use
+credentials that **ONLY** allow access to that bucket.  IAM permissions
+can be quite specific regarding what and from where credentials can be
+used to access resources.
+
 ## Additonal Notes on Logging
 
 Versions _1.0.18_ and _1.0.19_ allowed you to enable debugging by
@@ -697,3 +768,15 @@ modified under the same terms as Perl itself.
 # AUTHOR
 
 Rob Lauer - <rlauer6@comcast.net>
+
+# POD ERRORS
+
+Hey! **The above document had some coding errors, which are explained below:**
+
+- Around line 1933:
+
+    Unknown directive: =ite
+
+- Around line 1937:
+
+    You forgot a '=back' before '=head2'

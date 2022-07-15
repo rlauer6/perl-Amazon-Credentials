@@ -1,14 +1,16 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib};
+
 use Test::More;
 
 if ( !$ENV{AMAZON_CREDENTIALS_TEST_ALL} ) {
   plan skip_all => 'set AMAZON_CREDENTIALS_TEST_ALL to test in AWS';
-}
+} ## end if ( !$ENV{AMAZON_CREDENTIALS_TEST_ALL...})
 else {
   plan tests => 3;
-}
+} ## end else [ if ( !$ENV{AMAZON_CREDENTIALS_TEST_ALL...})]
 
 use Data::Dumper;
 use English qw{ -no_match_vars };
@@ -22,7 +24,7 @@ use_ok('Amazon::Credentials');
 subtest 'get real credentials from role' => sub {
   if ( !$ENV{AWS_ROLE_NAME} ) {
     plan skip_all => 'no AWS_ROLE_NAME defined';
-  }
+  } ## end if ( !$ENV{AWS_ROLE_NAME...})
 
   my $creds = Amazon::Credentials->new( order => ['role'] );
 
@@ -39,7 +41,7 @@ subtest 'get real credentials from role' => sub {
 subtest 'get real credentials from profile' => sub {
   if ( !$ENV{AWS_PROFILE} ) {
     plan skip_all => 'no PROFILE defined';
-  }
+  } ## end if ( !$ENV{AWS_PROFILE...})
 
   my $creds = eval {
     Amazon::Credentials->new(

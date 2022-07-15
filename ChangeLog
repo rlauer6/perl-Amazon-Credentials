@@ -1,3 +1,29 @@
+Tue Jul 12 12:27:30 2022  Rob Lauer  <rlauer@usgn.net>
+
+	[1.1.10 - unit tests, passkey, GetRoleCredentials]:
+	* VERSION: bump
+	* NEWS.md: updates
+	* README.md: generated
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- pod for new subs
+	- remove passkey from hash, store as lexical
+	(get_passkey): new
+	(set_passkey): new
+	(main): new
+	(help): new
+	(set_sso_credentials): new
+	(get_role_credentiuuuals): new
+	(_get_access_token): new
+	* src/main/perl/t/*: qw{ . lib }
+	* configure.ac
+	- add JSON::PP, et.al.
+	- add src/main/bash/bin/Makefile
+	* src/main/bash/bin/get-role-credentials.sh.in: new
+	* src/main/bash/Makefile.am: new
+	* src/main/bash/bin/Makefile.am: new
+	* src/main/Makefile.am: add above to SUBDIRS
+	* cpan/buildspec.yml: exe_files (added shell scripts)
+
 Fri Jun  3 12:45:37 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.9 - get region from .aws/config]:

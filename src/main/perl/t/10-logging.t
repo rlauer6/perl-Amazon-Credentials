@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib };
+
 use Test::More;
 use Test::Output;
 
@@ -19,10 +21,10 @@ END_OF_TEXT
 
   if ($EVAL_ERROR) {
     plan skip_all => 'no Log::Log4perl available';
-  }
+  } ## end if ($EVAL_ERROR)
   else {
     plan tests => 2;
-  }
+  } ## end else [ if ($EVAL_ERROR) ]
 
   {
     no strict 'refs';

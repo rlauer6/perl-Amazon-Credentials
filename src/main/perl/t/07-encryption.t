@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib};
+
 use Data::Dumper;
 use Date::Format;
 use English qw{ -no_match_vars };
@@ -16,10 +18,10 @@ my $has_crypt_cbc = eval {
 
 if ( !$has_crypt_cbc ) {
   plan skip_all => 'Crypt::CBC unavilable';
-}
+} ## end if ( !$has_crypt_cbc )
 else {
   plan tests => 14;
-}
+} ## end else [ if ( !$has_crypt_cbc )]
 
 BEGIN {
   {
@@ -52,13 +54,13 @@ sub my_encrypt {
   my $sum = 0;
 
   foreach ( split //, $passkey ) {
-    $sum += ord($_);
-  }
+    $sum += ord $_;
+  } ## end foreach ( split //, $passkey)
 
   my @encrypted_str;
   foreach ( split //, $str ) {
-    push @encrypted_str, $sum + ord($_);
-  }
+    push @encrypted_str, $sum + ord $_;
+  } ## end foreach ( split //, $str )
 
   return \@encrypted_str;
 } ## end sub my_encrypt
@@ -73,15 +75,15 @@ sub my_decrypt {
   my $sum           = 0;
 
   foreach ( split //, $passkey ) {
-    $sum += ord($_);
-  }
+    $sum += ord $_;
+  } ## end foreach ( split //, $passkey)
 
   $str = '';
 
   foreach my $c (@encrypted_str) {
     $c -= $sum;
-    $str .= chr($c);
-  }
+    $str .= chr $c;
+  } ## end foreach my $c (@encrypted_str)
 
   return $str;
 } ## end sub my_decrypt
@@ -117,7 +119,7 @@ sub check_credentials {
       $retval
         += !ok( !defined $credentials->can( 'get__' . $e )->($credentials),
         $test . ' - ' . $e . ' not cached' );
-    }
+    } ## end foreach my $e (qw{access_key_id secret_access_key })
   } ## end else [ if ( $credentials->get_cache)]
 
   return !$retval;
@@ -246,7 +248,11 @@ subtest 'rotate credentials' => sub {
     or diag( Dumper [ $passkey, $new_passkey ] );
 
   check_credentials( $credentials, \%unencrypted_creds, 'rotate' )
-    or diag( Dumper [$credentials] );
+    or diag(
+    Dumper [
+      $credentials->get_passkey(), 'new:', $new_passkey, $credentials
+    ]
+    );
 };
 
 ########################################################################
@@ -259,7 +265,7 @@ subtest 'rotate credentials with custom passkey' => sub {
     my ($regenerate) = @_;
 
     return $regenerate ? create_passkey() : $passkey;
-  }
+  } ## end sub get_passkey
 
   my $credentials = Amazon::Credentials->new(
     passkey => \&get_passkey,
@@ -299,7 +305,7 @@ subtest 'rotate credentials with custom passkey' => sub {
 
   sub get_passkey_v2 {
     return 'abra cadabra ala kazam!';
-  }
+  } ## end sub get_passkey_v2
 
   $credentials->set_cache(1);
   $credentials->set_passkey( \&get_passkey_v2 );
@@ -409,7 +415,7 @@ subtest 'get passkey from sub' => sub {
     or diag( Dumper [$credentials] );
 
   check_credentials( $credentials, \%unencrypted_creds, )
-    or diag( Dumper [$credentials] );
+    or diag( Dumper [ $passkey, $credentials->get_passkey, $credentials ] );
 
 };
 
@@ -504,7 +510,7 @@ subtest 'use Crypt::CBC' => sub {
 
   if ($EVAL_ERROR) {
     plan skip_all => $EVAL_ERROR;
-  }
+  } ## end if ($EVAL_ERROR)
 
   check_cipher( '', 'default cipher' );
 };
@@ -519,7 +525,7 @@ subtest 'use custom cipher' => sub {
 
   if ($EVAL_ERROR) {
     plan skip_all => $EVAL_ERROR;
-  }
+  } ## end if ($EVAL_ERROR)
 
   check_cipher( $cipher_name, 'custom cipher ' . $cipher_name );
 };

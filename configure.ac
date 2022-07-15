@@ -132,19 +132,26 @@ ads_PERL_MODULE([Data::Dumper])
 ads_PERL_MODULE([Date::Format])
 ads_PERL_MODULE([Getopt::Long])
 ads_PERL_MODULE([HTTP::Request])
-ads_PERL_MODULE([JSON])
+ads_PERL_MODULE([JSON::PP])
 ads_PERL_MODULE([LWP::UserAgent])
 ads_PERL_MODULE([POSIX::strptime])
 ads_PERL_MODULE([Scalar::Util])
 ads_PERL_MODULE([Time::Local])
 ads_PERL_MODULE([File::chdir])
 ads_PERL_MODULE([Test::Output])
+ads_PERL_MODULE([Class::Accessor::Fast])
+ads_PERL_MODULE([ReadonlyX])
+ads_PERL_MODULE([MIME::Base64])
+ads_PERL_MODULE([POSIX::strptime])
+ads_PERL_MODULE([List::Util])
 
 AC_CONFIG_FILES([
     Makefile
     cpan/Makefile
     src/Makefile
     src/main/Makefile
+    src/main/bash/Makefile
+    src/main/bash/bin/Makefile
     src/main/perl/Makefile
     src/main/perl/lib/Makefile
     ${PACKAGE_NAME}.spec

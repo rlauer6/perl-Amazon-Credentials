@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib};
+
 use Test::More tests => 4;
 use JSON::PP;
 
@@ -92,7 +94,7 @@ my %returned_creds;
 if ( ref($creds) ) {
   foreach my $k (@credential_keys) {
     $returned_creds{$k} = $creds->can("get_$k")->($creds);
-  }
-}
+  } ## end foreach my $k (@credential_keys)
+} ## end if ( ref($creds) )
 
 is_deeply( \%expected_creds, \%returned_creds, 'got expected creds' );

@@ -1,14 +1,14 @@
 Carp 1.26
 Class::Accessor::Fast 0.31
 Config::Tiny 2.28
-Data::Dumper 2.145
 Date::Format 2.24
 English 1.05
 Exporter 5.68
 File::chdir 0.1010
+File::Find 0
 File::HomeDir 1.00
 HTTP::Request 6.00
-JSON::PP 4.07
++JSON::PP 4.07
 +List::Util 1.5
 LWP::UserAgent 6.36
 MIME::Base64 3.13

@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib};
+
 use Test::More tests => 5;
 
 use Data::Dumper;
@@ -57,7 +59,7 @@ subtest 'format_credentials()' => sub {
     ok( $l =~ /^export (AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY)=(.*)$/,
       'export %s=%s' )
       or diag($l);
-  }
+  } ## end foreach my $l (@lines)
 };
 
 # credential_keys()

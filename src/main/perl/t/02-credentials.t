@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib};
+
 use Test::More tests => 6;
 
 use Data::Dumper;

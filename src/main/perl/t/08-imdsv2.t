@@ -1,14 +1,16 @@
 use strict;
 use warnings;
 
+use lib qw{ . lib};
+
 use Test::More;
 
 if ( !$ENV{AMAZON_CREDENTIALS_TEST_ALL} ) {
   plan skip_all => 'set AMAZON_CREDENTIALS_TEST_ALL to test in AWS';
-}
+} ## end if ( !$ENV{AMAZON_CREDENTIALS_TEST_ALL...})
 else {
   plan tests => 5;
-}
+} ## end else [ if ( !$ENV{AMAZON_CREDENTIALS_TEST_ALL...})]
 
 use Data::Dumper;
 
