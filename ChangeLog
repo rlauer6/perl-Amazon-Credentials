@@ -1,3 +1,14 @@
+Wed Aug 10 11:54:11 2022  Rob Lauer  <rlauer@usgn.net>
+
+	[1.1.11 - SSO]:
+	* VERSION: bump
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(new)
+	- sso_role_name, sso_account_id, sso_region
+	(get_region_from_env): new
+	* src/main/perl/t/13-env.t: delete AWS_REGION from env
+	* NEWS.md: update
+
 Tue Jul 12 12:27:30 2022  Rob Lauer  <rlauer@usgn.net>
 
 	[1.1.10 - unit tests, passkey, GetRoleCredentials]:
@@ -12,7 +23,7 @@ Tue Jul 12 12:27:30 2022  Rob Lauer  <rlauer@usgn.net>
 	(main): new
 	(help): new
 	(set_sso_credentials): new
-	(get_role_credentiuuuals): new
+	(get_role_credentials): new
 	(_get_access_token): new
 	* src/main/perl/t/*: qw{ . lib }
 	* configure.ac

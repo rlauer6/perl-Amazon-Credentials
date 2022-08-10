@@ -35,17 +35,25 @@ you only want to retrieve the credentials use `get_role_credentials`.
     set_sso_credentials($role_name, $account_id, $region);
     my $credentials = Amazon::Credentials->new;
 
-    my $credential = get_role_credentials(role_name  => $role_name,
-                                          account_id => $account_id,
-                                          region     => $region);
+    my $credential = get_role_credentials(role_name  => $sso_role_name,
+                                          account_id => $sso_account_id,
+                                          region     => $sso_region);
 
 or from the command line...
 
     amazon-credentials.sh --role my-sso-role --account 01234567890
 
+or pass your SSO role name and account ID...
+
+    my $credentials =  Amazon::Credentials->new(sso_role_name  => $role,
+                                                sso_account_id => $account_id,
+                                                sso_region     => $region,
+                                               );
+    
+
 # VERSION
 
-This document reverse to verion 1.1.10 of
+This document reverse to verion 1.1.11 of
 `Amazon::Credentials`.
 
 # METHODS AND SUBROUTINES
@@ -422,8 +430,7 @@ After logging in using your SSO credentials...
 
 - role\_name => role name (required)
 - account\_id => AWS account id (required)
-
-    required
+- region => AWS region where SSO has been provisioned
 
     default: $ENV{AWS\_REGION}, $ENV{AWS\_DEFAULT\_REGION}, us-east-1
 
@@ -768,15 +775,3 @@ modified under the same terms as Perl itself.
 # AUTHOR
 
 Rob Lauer - <rlauer6@comcast.net>
-
-# POD ERRORS
-
-Hey! **The above document had some coding errors, which are explained below:**
-
-- Around line 1933:
-
-    Unknown directive: =ite
-
-- Around line 1937:
-
-    You forgot a '=back' before '=head2'

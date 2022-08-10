@@ -32,6 +32,8 @@ like( $EVAL_ERROR, qr/^no credentials available/, 'raise_error => 1' )
 
 $ENV{AWS_ACCESS_KEY_ID}     = 'AKIexample';
 $ENV{AWS_SECRET_ACCESS_KEY} = '599797945475eefadfd';
+delete $ENV{AWS_REGION};
+delete $ENV{AWS_DEFAULT_REGION};
 
 $creds = eval {
   Amazon::Credentials->new(

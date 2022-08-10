@@ -7,6 +7,16 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.11 (2022-08-10)
+
+## Enhancements
+
+* retrieve credentials from SSO by passing `sso_role_name` and `sso_account_id`
+
+## Fixes
+
+* None
+
 # perl-Amazon-Credentials 1.1.10 (2022-07-15)
 
 ## Enhancements
