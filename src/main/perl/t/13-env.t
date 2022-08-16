@@ -37,8 +37,9 @@ delete $ENV{AWS_DEFAULT_REGION};
 
 $creds = eval {
   Amazon::Credentials->new(
-    { order => 'env',
-      debug => $ENV{DEBUG} ? 1 : 0,
+    { order              => 'env',
+      debug              => $ENV{DEBUG} ? 1 : 0,
+      no_passkey_warning => 1,
     }
   );
 };

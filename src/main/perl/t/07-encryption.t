@@ -131,8 +131,9 @@ sub check_cipher {
   my ( $cipher_name, $test ) = @_;
 
   my $credentials = Amazon::Credentials->new(
-    profile => 'foo',
-    cipher  => $cipher_name
+    profile            => 'foo',
+    cipher             => $cipher_name,
+    no_passkey_warning => 1,
   );
 
   ok( $credentials->get_encryption, 'encryption enabled' );
@@ -194,8 +195,9 @@ subtest 'obfuscation without Crypt::CBC' => sub {
     eval "use Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES };";
 
     my $credentials = Amazon::Credentials->new(
-      profile    => 'foo',
-      encryption => 1,
+      profile            => 'foo',
+      encryption         => 1,
+      no_passkey_warning => 1,
     );
 
     ok( !$credentials->get_encryption,
@@ -224,7 +226,10 @@ subtest 'obfuscation without Crypt::CBC' => sub {
 subtest 'decrypt' => sub {
 ########################################################################
 
-  my $credentials = Amazon::Credentials->new( profile => 'foo', );
+  my $credentials = Amazon::Credentials->new(
+    profile            => 'foo',
+    no_passkey_warning => 1,
+  );
 
   ok( defined $credentials->get_passkey, 'passkey created' );
 
@@ -238,8 +243,11 @@ subtest 'decrypt' => sub {
 subtest 'rotate credentials' => sub {
 ########################################################################
 
-  my $credentials
-    = Amazon::Credentials->new( profile => 'foo', encryption => 1 );
+  my $credentials = Amazon::Credentials->new(
+    profile            => 'foo',
+    encryption         => 1,
+    no_passkey_warning => 1,
+  );
 
   my $passkey     = $credentials->get_passkey;
   my $new_passkey = $credentials->rotate_credentials;
@@ -268,9 +276,10 @@ subtest 'rotate credentials with custom passkey' => sub {
   } ## end sub get_passkey
 
   my $credentials = Amazon::Credentials->new(
-    passkey => \&get_passkey,
-    profile => 'foo',
-    cache   => 1,
+    passkey            => \&get_passkey,
+    profile            => 'foo',
+    cache              => 1,
+    no_passkey_warning => 1,
   );
 
   isa_ok( $credentials, 'Amazon::Credentials' );
@@ -287,9 +296,10 @@ subtest 'rotate credentials with custom passkey' => sub {
     or diag( Dumper [$credentials] );
 
   $credentials = Amazon::Credentials->new(
-    cache   => 0,
-    passkey => \&get_passkey,
-    profile => 'foo'
+    cache              => 0,
+    passkey            => \&get_passkey,
+    profile            => 'foo',
+    no_passkey_warning => 1,
   );
 
   $old_passkey = $passkey = get_passkey(1);
@@ -333,10 +343,11 @@ subtest 'custom encryption/decryption' => sub {
 ########################################################################
 
   my $credentials = Amazon::Credentials->new(
-    profile => 'foo',
-    encrypt => \&my_encrypt,
-    decrypt => \&my_decrypt,
-    passkey => sub { return 'my passkey' },
+    profile            => 'foo',
+    encrypt            => \&my_encrypt,
+    decrypt            => \&my_decrypt,
+    passkey            => sub { return 'my passkey' },
+    no_passkey_warning => 1,
   );
 
   check_credentials( $credentials, \%unencrypted_creds, 'custom encryption' )
@@ -351,9 +362,10 @@ subtest 'custom encryption/decryption setting' => sub {
   foreach my $sub (qw{ encrypt decrypt }) {
     my $credentials = eval {
       return Amazon::Credentials->new(
-        profile => 'foo',
-        $sub    => sub { },
-        passkey => sub { return 'my passkey' },
+        profile            => 'foo',
+        $sub               => sub { },
+        passkey            => sub { return 'my passkey' },
+        no_passkey_warning => 1,
       );
     };
 
@@ -366,8 +378,13 @@ subtest 'custom encryption/decryption setting' => sub {
 subtest 'cache credentials' => sub {
 ########################################################################
 
-  my $credentials = eval { return Amazon::Credentials->new( profile => 'foo',
-      cache => 1, ); };
+  my $credentials = eval {
+    return Amazon::Credentials->new(
+      profile            => 'foo',
+      cache              => 1,
+      no_passkey_warning => 1,
+    );
+  };
 
   check_credentials( $credentials, \%unencrypted_creds, 'cache on' )
     or diag( Dumper [$credentials] );
@@ -382,8 +399,13 @@ subtest 'cache credentials' => sub {
 subtest 'do not cache credentials' => sub {
 ########################################################################
 
-  my $credentials = eval { return Amazon::Credentials->new( profile => 'foo',
-      cache => 0, ); };
+  my $credentials = eval {
+    return Amazon::Credentials->new(
+      profile            => 'foo',
+      cache              => 0,
+      no_passkey_warning => 1,
+    );
+  };
 
   check_credentials( $credentials, \%unencrypted_creds, 'cache off' )
     or diag( Dumper [$credentials] );
@@ -408,6 +430,7 @@ subtest 'get passkey from sub' => sub {
       passkey    => sub {
         return $passkey;
       },
+      no_passkey_warning => 1,
     );
   };
 
@@ -427,10 +450,11 @@ subtest 'rotate credentials w/new passkey' => sub {
 
   my $credentials = eval {
     return Amazon::Credentials->new(
-      profile    => 'foo',
-      cache      => 1,
-      encryption => 1,
-      passkey    => $passkey,
+      profile            => 'foo',
+      cache              => 1,
+      encryption         => 1,
+      passkey            => $passkey,
+      no_passkey_warning => 1,
     );
   };
 
@@ -483,6 +507,7 @@ subtest 'token encryption' => sub {
     token                 => 'biz',
     encryption            => 1,
     cache                 => 1,
+    no_passkey_warning    => 1,
   );
 
   ok( $credentials->get_encryption, 'encryption enabled' )

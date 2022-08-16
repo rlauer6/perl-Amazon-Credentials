@@ -35,9 +35,10 @@ is( $creds->get_aws_access_key_id,
 is( $creds->get_region, 'us-east-1', 'default region' );
 
 $creds = Amazon::Credentials->new(
-  { profile => 'bar',
-    order   => [qw/file/],
-    region  => 'foo',
+  { profile            => 'bar',
+    order              => [qw/file/],
+    region             => 'foo',
+    no_passkey_warning => 1,
   }
 );
 

@@ -1,3 +1,20 @@
+Tue Aug 16 16:48:23 2022  Rob Lauer  <rlauer@usgn.net>
+
+	[1.1.12 - reusing passkeys]:
+	* VERSION: bump
+	* src/main/perl/t/01-credentials.t: no_passkey_warning
+	* src/main/perl/t/07-encryption.t: likewise
+	* src/main/perl/t/12-error.t: likewise
+	* src/main/perl/t/13-env.t: likewise
+	* src/main/bash/bin/Makefile.am
+	- amazon-credentials, get-sso-credentials
+	* src/main/perl/lib/Amazon/Credential.pm.in
+	- pod tweaks and additions
+	- no_passkey_warnings
+	(new): warnings
+	(get_creds_from_env): clear %ENV of credentials
+	(_get_access_token): restore current working directory
+
 Wed Aug 10 11:54:11 2022  Rob Lauer  <rlauer@usgn.net>
 
 	[1.1.11 - SSO]:

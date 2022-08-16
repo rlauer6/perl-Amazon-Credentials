@@ -7,6 +7,19 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.12 (2022-08-16)
+
+## Enhancements
+
+* warnings when passkey is being used from multiple instances of
+  Amazon::Credentials
+* 
+
+## Fixes
+
+* remove credentials from local environment after use
+* retrieving credentials from SSO modified current working directory
+
 # perl-Amazon-Credentials 1.1.11 (2022-08-10)
 
 ## Enhancements

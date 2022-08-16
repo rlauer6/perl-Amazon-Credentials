@@ -9,7 +9,7 @@ Amazon::Credentials - fetch Amazon credentials from file, environment or role
 
 CLI
 
-    amazon-credentials.sh --help
+    amazon-credentials --help
 
 # DESCRIPTION
 
@@ -53,7 +53,7 @@ or pass your SSO role name and account ID...
 
 # VERSION
 
-This document reverse to verion 1.1.11 of
+This document reverse to verion 1.1.12 of
 `Amazon::Credentials`.
 
 # METHODS AND SUBROUTINES
@@ -177,6 +177,24 @@ Any of the options can also be retrieved using their corresponding
     Pass in your own logger that has a `debug()` method.  Otherwise the
     default logger will output debug messages to STDERR.
 
+- no\_passkey\_warning
+
+    Boolean that indicates whether warning messages about passkey usage
+    should be supressed.
+
+    If you attempt to reset the passkey or if you instantiate a second
+    instance of Amazon::Credentials, the constructor will issue warnings.
+
+    Resetting a passkey means that you previous version of
+    Amazon::Credentials will no longer be able to decrypt credentials
+    unless you restore the original passkey.
+
+    If you instantiate another version of Amazon::Credentials without
+    resetting the passkey, the new instance will use the old value for the
+    passkey. This is by design.
+
+    default: false
+
 - order
 
     An array reference containing tokens that specifies the order in which the class will
@@ -249,7 +267,9 @@ Any of the options can also be retrieved using their corresponding
 - timeout
 
     When looking for credentials in metadata URLs, this parameter
-    specifies the timeout value for `LWP`.  The default is 3 seconds.
+    specifies the timeout value for `LWP`.
+
+    default: 3s
 
 - user\_agent
 
@@ -604,26 +624,121 @@ from exposure.
         credentials. Obviously the passkey must be available for
         `Amazon::Credentials` to decrypt the keys, however it is **NOT**
         stored in the blessed hash reference that stores other data used by
-        the class. To avoid having the class know about your passkey at all, pass a
+        the class. Instead the passkey is a class variable and will be
+        initialized once for all instances of `Amazon::Credentials` your
+        script uses.
+
+        If you plan on using multiple instances of `Amazon::Credentials` **and**
+        you are passing in your own passkeys, then you'll need to reset the
+        passkey for each use of the credentials. See the example below in the
+        ["Using Multiple Instances of Amazon::Credentials"](#using-multiple-instances-of-amazon-credentials) section.
+
+        To avoid having the class know about your passkey at all, pass a
         reference to a subroutine that will provide the passkey for encryption
         and decryption. You can even use the same passkey generator that is
         used by `Amazon::Credentials` (`create_passkey`).
 
-        The point here is to avoid storing your passkey the same object as the
-        credentials to minimize the likelihood of exposing your credentials or
-        your methods for encryption in logs...better but not perfect. It's
-        still may be possible to expose your passkey and your credentials if
-        you are not careful.
+        The point here is to avoid storing your passkey in the same object as
+        the credentials to minimize the likelihood of exposing your
+        credentials or your methods for encryption in logs...better but not
+        perfect. It's still may be possible to expose your passkey and your
+        credentials if you are not careful.
 
             use Amazon::Credentials qw{ create_passkey };
 
             my $passkey = create_passkey();
 
-            my $credentials = Amazon::Credentials( passkey => sub { return $passkey } );
+            my $credentials = Amazon::Credentials->new(
+                 passkey => sub { return caller(0) eq 'Amazon::Credentials' && $passkey },
+             );
 
         A more secure approach would be for your subroutine to retrieve a
         passkey from a source other than your own program and **never** store
         the passkey inside your program.
+
+    - Using Multiple Instances of Amazon::Credentials
+
+        You may at times need to assume a role using initial credentials. In
+        this case you can use multiple instances of
+        `Amazon::Credentials`. Let's suppose that you have logged in with
+        your SSO credentials but your script must assume a role in another
+        account to perform some action.
+
+            # 1. retrieve SSO credentials
+            my $sso_credentials = Amazon::Credentials->new(
+              sso_role_name  => 'developer',
+              sso_account_id => '01234567890'
+            );
+
+            # 2. assume a role in another account
+            my $role_arn = 'arn:aws:iam::09876543210:role/Route53AccountAccessRole';
+            my $role_session_name = "route53-role-$PID";
+            
+            # using the SSO credentials which presumably allow you to assume the role...
+            my $sts = Amazon::API::STS->new( credentials => $sso_credentials );
+            
+            my $assume_role_result = $sts->AssumeRole(
+              { RoleArn         => $role_arn,
+                RoleSessionName => $role_session_name,
+              }
+            );
+            
+            my $assume_role_credentials = $assume_role_result->{AssumeRoleResult}->{Credentials};
+
+            # 3. create new credentials for assumed role
+            my $role_credentials = Amazon::Credentials->new(
+              aws_access_key_id     => $assume_role_credentials->{AccessKeyId},
+              aws_secret_access_key => $assume_role_credentials->{SecretAccessKey},
+              expiration            => $assume_role_credentials->{Expiration},
+              token                 => $assume_role_credentials->{SessionToken},
+             );
+            
+            # 4. make a call to another API
+            my $rt53 = Amazon::API::Route53->new(
+              credentials => $role_credentials,
+             );
+            
+            my $list_tags_for_resources_response = $rt53->ListTagsForResources(
+               { ResourceType => 'hostedzone',
+                 ResourceIds  => \@zone_ids,
+               }
+             );
+
+        As noted above, when you use multiple instances of
+        `Amazon::Credentials`, the _same_ passkey is used for encrypting
+        credentials. To avoid this, you can pass a custom passkey when you
+        instantiate the `Amazon::Credentials` object, however, you will need
+        to reset that passkey when you use that object.
+
+            use Amazon::Credentials qw{create_passkey};
+            
+            my %passkey = (
+              sso  => create_passkey,
+              role => create_passkey,
+            );
+
+            my $sso_creds = sub { return $passkey{sso} };
+            my $role_creds = sub { return $passkey{role} };
+
+            my $sso_credentials = Amazon::Credentials->new(
+              sso_role_name  => 'developer',
+              sso_account_id => '01234567890'
+              passkey        => $sso_creds,
+            );
+
+            ... 
+
+            my $role_credentials = Amazon::Credentials->new(
+              aws_access_key_id     => $assume_role_credentials->{AccessKeyId},
+              aws_secret_access_key => $assume_role_credentials->{SecretAccessKey},
+              token                 => $assume_role_credentials->{SessionToken},
+              expiration            => $assume_role_credentials->{Expiration},
+              passkey               => $role_creds,
+            );
+
+        ...then later
+
+            $sso_credentials->set_passkey($sso_creds);
 
     - Using a Custom Cipher
 
@@ -656,7 +771,7 @@ from exposure.
 
             sub get_passkey {
               my ($regenerate) = shift;
-              
+
               return $regenerate ? create_passkey : $passkey;
             } 
             

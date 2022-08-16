@@ -20,8 +20,9 @@ my $creds;
 
 $creds = eval {
   Amazon::Credentials->new(
-    { profile => 'no profile',
-      debug   => $ENV{DEBUG} ? 1 : 0,
+    { profile            => 'no profile',
+      debug              => $ENV{DEBUG} ? 1 : 0,
+      no_passkey_warning => 1,
     }
   );
 };
@@ -33,9 +34,10 @@ stderr_like(
   sub {
     $creds = eval {
       Amazon::Credentials->new(
-        { profile     => 'no profile',
-          debug       => $ENV{DEBUG} ? 1 : 0,
-          raise_error => 0,
+        { profile            => 'no profile',
+          debug              => $ENV{DEBUG} ? 1 : 0,
+          raise_error        => 0,
+          no_passkey_warning => 1,
         }
       );
     } ## end eval
@@ -51,10 +53,11 @@ stderr_is(
   sub {
     $creds = eval {
       Amazon::Credentials->new(
-        { profile     => 'no profile',
-          debug       => $ENV{DEBUG} ? 1 : 0,
-          raise_error => 0,
-          print_error => 0,
+        { profile            => 'no profile',
+          debug              => $ENV{DEBUG} ? 1 : 0,
+          raise_error        => 0,
+          print_error        => 0,
+          no_passkey_warning => 1,
         }
       );
     } ## end eval
@@ -63,7 +66,12 @@ stderr_is(
   'no print error'
 );
 
-$creds = eval { return Amazon::Credentials->new( profile => 'boo' ); };
+$creds = eval {
+  return Amazon::Credentials->new(
+    profile            => 'boo',
+    no_passkey_warning => 1,
+  );
+};
 
 like( $EVAL_ERROR, qr/could not open/, 'bad process' )
   or diag( Dumper ["$EVAL_ERROR"] );
