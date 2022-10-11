@@ -23,7 +23,6 @@ cpan:
 	cd . && $(MAKE)
 	cd cpan && $(MAKE) cpan
 
-CLEANFILES = \
-    README.md
+CLEANFILES =
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-distcheck-hack --enable-rpmbuild
