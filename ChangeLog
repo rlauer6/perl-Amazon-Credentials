@@ -1,3 +1,9 @@
+Sun Nov 13 14:09:59 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.14]:
+	* VERSION: bump
+	* perl-Amazon-Credentials.spec.in: add scripts to libexecdir
+
 Fri Aug 19 11:21:48 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.13 - SSO error message]:
