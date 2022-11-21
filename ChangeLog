@@ -1,3 +1,10 @@
+Mon Nov 21 18:41:11 2022  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.15]:
+	* VERSION: bump
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(get_creds_from_env): 4 args, not 3 - avoid uninitialized warning
+
 Sun Nov 13 14:09:59 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.14]:

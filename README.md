@@ -53,7 +53,7 @@ or pass your SSO role name and account ID...
 
 # VERSION
 
-This document reverse to verion 1.1.14 of
+This document reverse to verion 1.1.15 of
 `Amazon::Credentials`.
 
 # METHODS AND SUBROUTINES
