@@ -9,7 +9,7 @@ dependencies:
     test_requires: test-requires
     core_modules: no
 path:
-  pm_module: ../src/main/perl/lib
-  tests: ../src/main/perl/t
-  exe_files: ../src/main/bash/bin
+  pm_module: src/main/perl/lib
+  tests: src/main/perl/t
+  exe_files: src/main/bash/bin
 extra: extra-files

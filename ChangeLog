@@ -1,3 +1,18 @@
+Sun Jan  8 15:50:03 2023  Rob Lauer  <rlauer@usgn.net>
+
+	[1.1.16]:
+	* VERSION: bump
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	* cpan/extra-files: use path's relative to project root
+	* cpan/buildspec.yml: likewise
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- use q() instead of q{} for lists
+	* src/main/bash/bin/amazon-credentials.sh.in
+	- implement generic modulino pattern for scripts
+	- use qw() instead of qw{} for lists
+	(get_role_credentials): missing arg in sprintf
+	* NEWS.md - update
+
 Mon Nov 21 18:41:11 2022  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.15]:

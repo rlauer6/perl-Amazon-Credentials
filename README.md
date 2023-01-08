@@ -4,7 +4,7 @@ Amazon::Credentials - fetch Amazon credentials from file, environment or role
 
 # SYNOPSIS
 
-    my @order = qw{ env file container role };
+    my @order = qw( env file container role );
     my $creds = Amazon::Credentials->new( { order => \@order } );
 
 CLI
@@ -26,11 +26,11 @@ _NEW!_
 This class also implements a method for retrieving your SSO
 credentials. By default the method will set the environment variables
 `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
-`AWS_SESSION_TOKEN`. Subsequently call `Amazon::Credentials` to
+`AWS_SESSION_TOKEN`. Subsequently call [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) to
 retrieve and use the credentials from the localized environment. If
 you only want to retrieve the credentials use `get_role_credentials`.
 
-    use Amazon::Credentials qw{set_sso_credentials get_role_credentials};
+    use Amazon::Credentials qw(set_sso_credentials get_role_credentials);
 
     set_sso_credentials($role_name, $account_id, $region);
     my $credentials = Amazon::Credentials->new;
@@ -53,8 +53,8 @@ or pass your SSO role name and account ID...
 
 # VERSION
 
-This document reverse to verion 1.1.15 of
-`Amazon::Credentials`.
+This document reverse to verion 1.1.16 of
+[Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
 # METHODS AND SUBROUTINES
 
@@ -84,7 +84,7 @@ Any of the options can also be retrieved using their corresponding
 
 - cache
 
-    boolean when set to false will prevent `Amazon::Credentials` from
+    boolean when set to false will prevent [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) from
     cacheing credentials. **Cacheing is enabled by default.**
 
     _Note that the if cacheing is disabled, the module will obtain
@@ -111,7 +111,7 @@ Any of the options can also be retrieved using their corresponding
 
     Set to true for verbose troubleshooting information. Set `logger` to
     a logger that implements a logging interface (ala
-    `Log::Log4perl`.
+    [Log::Log4perl](https://metacpan.org/pod/Log%3A%3ALog4perl).
 
 - decrypt
 
@@ -267,7 +267,7 @@ Any of the options can also be retrieved using their corresponding
 - timeout
 
     When looking for credentials in metadata URLs, this parameter
-    specifies the timeout value for `LWP`.
+    specifies the timeout value for [LWP](https://metacpan.org/pod/LWP).
 
     default: 3s
 
@@ -461,9 +461,9 @@ After logging in using your SSO credentials...
 Calls `get_role_credentials` and set AWS credenital environment
 variables. Region is optional, all other parameters are required.
 
-    use Amazon::Credentials qw{set_sso_credentials}
+    use Amazon::Credentials qw(set_sso_credentials)
 
-    set_sso_credentials(@ENV{qw{AWS_ROLE_NAME AWS_ACCOUNT_ID}});
+    set_sso_credentials(@ENV{qw(AWS_ROLE_NAME AWS_ACCOUNT_ID)});
 
     my $credentials = Amazon::Credentials->new;
 
@@ -478,7 +478,7 @@ Example:
 
 # DIAGNOSTICS
 
-Set the `debug` option when you instantiate a `Amazon::Credentials`
+Set the `debug` option when you instantiate a [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials)
 object to output debug and diagnostic messages. Note that you must
 also set the `insecure` option if you want to output full
 diagnostics. _WARNING: Full diagnostics may include credentials. Be
@@ -498,7 +498,7 @@ described throughout this documentation.
 
 # BUGS AND LIMITATIONS
 
-`Amazon::Credentials` will **not** attempt to retrieve temporary
+[Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) will **not** attempt to retrieve temporary
 credentials for profiles that specify a role. If for example you
 define a role in your credentials file thusly:
 
@@ -529,7 +529,7 @@ Lower versions of these modules may be acceptable.
 ...and possibly others
 
 In order to enable true encryption of your credentials when cached,
-`Crypt::CBC` is also required.
+[Crypt::CBC](https://metacpan.org/pod/Crypt%3A%3ACBC) is also required.
 
 # SECURITY CONSIDERATIONS
 
@@ -553,15 +553,15 @@ credentials in plain-text.
 **Always take precautions to prevent accidental exfiltration of your
 credentials.**
 
-## How `Amazon::Credentials` Helps Prevent Exfiltration
+## How [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) Helps Prevent Exfiltration
 
 For performance and historical reasons the default is for
-`Amazon::Credentials` to cache your credentials. Starting with
+[Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) to cache your credentials. Starting with
 version _1.1.0_, the module will attempt to encrypt the credentials
-before storing them. The module uses `Crypt::CBC` (if available) with
+before storing them. The module uses [Crypt::CBC](https://metacpan.org/pod/Crypt%3A%3ACBC) (if available) with
 the default cipher and a random (or user defined) passkey.
 
-Even if `Crypt::CBC` is not available, the module will try to
+Even if [Crypt::CBC](https://metacpan.org/pod/Crypt%3A%3ACBC) is not available, the module will try to
 obfuscate the credentials. A determined actor can still decrypt these
 keys if they have access to the obfuscated values and your
 passkey. You have several options to better secure your credentials
@@ -575,7 +575,7 @@ from exposure.
 
         my $credentials = Amazon::Credentials->new(cache => 0);
 
-    Normally, your credentials are fetched when the `Amazon::Credentials`
+    Normally, your credentials are fetched when the [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials)
     object is instantiated. With cacheing turned off credentials will not
     be fetched until they are first requested.
 
@@ -587,9 +587,9 @@ from exposure.
 
         Use the method `credential_keys` to retrieve all of the keys at once
         as a hash. Using this method with cacheing turned off will prevent
-        `Amazon::Credentials` from ever saving your credentials to variables
+        [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) from ever saving your credentials to variables
         that can be inadvertantly exposed. Each subsequent request for the
-        keys will cause `Amazon::Credentials` to fetch the keys again.
+        keys will cause [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) to fetch the keys again.
 
     - Getter Methods
 
@@ -608,8 +608,8 @@ from exposure.
 
 - Option 3 - Encrypt your credentials
 
-    `Amazon::Credentials` will encrypt your credentials by default
-    starting with version _1.1.0_. If `Crypt::CBC` is available, the
+    [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) will encrypt your credentials by default
+    starting with version _1.1.0_. If [Crypt::CBC](https://metacpan.org/pod/Crypt%3A%3ACBC) is available, the
     class will use the default cipher and a random passkey to encrypt your
     credentials. If the encryption module is not available, the class will
     still obfuscate (not encrypt) the credentials. Encryption when the
@@ -622,13 +622,13 @@ from exposure.
         By default the module will generate its own random passkey during
         initialization and use that to encrypt and decrypt the
         credentials. Obviously the passkey must be available for
-        `Amazon::Credentials` to decrypt the keys, however it is **NOT**
+        [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) to decrypt the keys, however it is **NOT**
         stored in the blessed hash reference that stores other data used by
         the class. Instead the passkey is a class variable and will be
-        initialized once for all instances of `Amazon::Credentials` your
+        initialized once for all instances of [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) your
         script uses.
 
-        If you plan on using multiple instances of `Amazon::Credentials` **and**
+        If you plan on using multiple instances of [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) **and**
         you are passing in your own passkeys, then you'll need to reset the
         passkey for each use of the credentials. See the example below in the
         ["Using Multiple Instances of Amazon::Credentials"](#using-multiple-instances-of-amazon-credentials) section.
@@ -636,7 +636,7 @@ from exposure.
         To avoid having the class know about your passkey at all, pass a
         reference to a subroutine that will provide the passkey for encryption
         and decryption. You can even use the same passkey generator that is
-        used by `Amazon::Credentials` (`create_passkey`).
+        used by [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) (`create_passkey`).
 
         The point here is to avoid storing your passkey in the same object as
         the credentials to minimize the likelihood of exposing your
@@ -644,7 +644,7 @@ from exposure.
         perfect. It's still may be possible to expose your passkey and your
         credentials if you are not careful.
 
-            use Amazon::Credentials qw{ create_passkey };
+            use Amazon::Credentials qw( create_passkey );
 
             my $passkey = create_passkey();
 
@@ -660,7 +660,7 @@ from exposure.
 
         You may at times need to assume a role using initial credentials. In
         this case you can use multiple instances of
-        `Amazon::Credentials`. Let's suppose that you have logged in with
+        [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials). Let's suppose that you have logged in with
         your SSO credentials but your script must assume a role in another
         account to perform some action.
 
@@ -705,12 +705,12 @@ from exposure.
              );
 
         As noted above, when you use multiple instances of
-        `Amazon::Credentials`, the _same_ passkey is used for encrypting
+        [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials), the _same_ passkey is used for encrypting
         credentials. To avoid this, you can pass a custom passkey when you
-        instantiate the `Amazon::Credentials` object, however, you will need
+        instantiate the [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) object, however, you will need
         to reset that passkey when you use that object.
 
-            use Amazon::Credentials qw{create_passkey};
+            use Amazon::Credentials qw(create_passkey);
             
             my %passkey = (
               sso  => create_passkey,
@@ -742,9 +742,9 @@ from exposure.
 
     - Using a Custom Cipher
 
-        As noted, the default `Crypt::CBC` cipher is used for encrypting your
+        As noted, the default [Crypt::CBC](https://metacpan.org/pod/Crypt%3A%3ACBC) cipher is used for encrypting your
         credentials, however you can pass a custom cipher supported by
-        `Crypt::CBC` further obfuscating the methods used to encrypt your
+        [Crypt::CBC](https://metacpan.org/pod/Crypt%3A%3ACBC) further obfuscating the methods used to encrypt your
         credentials.
 
             my $credentials = Amazon::Credentials(
@@ -765,7 +765,7 @@ from exposure.
         ...or if you have a custom passkey generator your subroutine must
         continue to provide the old passkey before you can reset the passkey.
 
-            use Amazon::Credentials qw{ create_passkey };
+            use Amazon::Credentials qw( create_passkey );
 
             my $passkey = create_passkey;
 
@@ -813,7 +813,7 @@ from exposure.
 ## Securing Your Logs
 
 To troubleshoot potential bugs in this module or to understand what
-`Amazon::Credentials` is doing you can pass a debug flag that will
+[Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) is doing you can pass a debug flag that will
 write potentially helpful info to STDERR.
 
 To prevent possible exposure of credentials in debug messages, the
@@ -840,7 +840,7 @@ all content you the `insecure` flag to any of the values shown below.
 
 One additional tip to help prevent the use of your credentials even if
 they have been exposed in logs or files. _Use temporary credentials
-with short expiration times whenever possible._ `Amazon::Credentials`
+with short expiration times whenever possible._ [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials)
 provides methods to determine if your credentials have expired and
 a method to refresh them when they have.
 
@@ -863,14 +863,13 @@ setting the environment variable DEBUG to any true value to enable
 basic debug output. Version _1.0.18_ would log information to STDERR
 including payloads that might contain credentials.  Version _1.0.19_
 would prevent writing any payload with credentials _unless_ the debug
-mode was set to 2 or 'insecure'.
+mode was set to 2 or 'insecure'.  Keep in mind however that you should
+avoid allowing upstream programs to use environment variables to set
+debugging modes that you might pass to [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
-Starting with version _1.1.0_ the `Amazon::Credentials` will not use
-the environment variable DEBUG to enable debugging. You must
-explicitly pass the debug flag in the constructor to enable
-debugging. Keep in mind however that you should avoid allowing
-upstream programs to use environment variables to set debugging modes
-that you might pass to `Amazon::Credentials`.
+Starting with version _1.1.0_ the [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) will **not**
+use the environment variable DEBUG to enable debugging! You must
+explicitly pass the debug flag in the constructor to enable debugging. This was done to prevent potential upstream modules that you might use who allow an environment variable to set debug mode to also inadvertantly trigger debug mode for [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
 # INCOMPATIBILITIES
 

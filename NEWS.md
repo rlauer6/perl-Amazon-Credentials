@@ -7,6 +7,21 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.13-16 (2023-01-08)
+
+Versions 1.13 - 1.1.16 provide minor refactoring but no major fixes or
+enhancements.
+
+## Enhancements
+
+- new help scripts added to distribution
+  * amazon-credentials, get-sso-credentials
+  
+## Fixes
+
+- avoid some uninitialized warnings
+- fix missing arg in sprintf for die message
+
 # perl-Amazon-Credentials 1.1.12 (2022-08-16)
 
 ## Enhancements
