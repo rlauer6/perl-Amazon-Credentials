@@ -1,3 +1,9 @@
+Mon Jan  9 05:48:08 2023  Rob Lauer  <rlauer@usgn.net>
+
+	[1.1.17]:
+	* VERSION: bump
+	* src/main/perl/lib/FOO.pm: removed from distribution
+
 Sun Jan  8 15:50:03 2023  Rob Lauer  <rlauer@usgn.net>
 
 	[1.1.16]:
