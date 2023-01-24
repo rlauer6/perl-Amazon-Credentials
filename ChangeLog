@@ -1,10 +1,18 @@
-Mon Jan  9 05:48:08 2023  Rob Lauer  <rlauer@usgn.net>
+Tue Jan 24 13:53:18 2023  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.18]:
+	* VERSION: bump
+	* README.md: generated
+	* cpan/Makefile.am: PROJECT_ROOT
+	* cpan/test-requires: rm Log::Log4perl as a requirement
+
+Mon Jan  9 05:48:08 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.17]:
 	* VERSION: bump
 	* src/main/perl/lib/FOO.pm: removed from distribution
 
-Sun Jan  8 15:50:03 2023  Rob Lauer  <rlauer@usgn.net>
+Sun Jan  8 15:50:03 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.16]:
 	* VERSION: bump
