@@ -53,7 +53,7 @@ or pass your SSO role name and account ID...
 
 # VERSION
 
-This document reverse to verion 1.1.18 of
+This document reverse to verion 1.1.19 of
 [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
 # METHODS AND SUBROUTINES
@@ -869,7 +869,10 @@ debugging modes that you might pass to [Amazon::Credentials](https://metacpan.or
 
 Starting with version _1.1.0_ the [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) will **not**
 use the environment variable DEBUG to enable debugging! You must
-explicitly pass the debug flag in the constructor to enable debugging. This was done to prevent potential upstream modules that you might use who allow an environment variable to set debug mode to also inadvertantly trigger debug mode for [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
+explicitly pass the debug flag in the constructor to enable
+debugging. This was done to prevent potential upstream modules that
+you might use who allow an environment variable to set debug mode to
+also inadvertantly trigger debug mode for [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
 # INCOMPATIBILITIES
 

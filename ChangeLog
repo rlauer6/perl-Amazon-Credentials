@@ -1,3 +1,12 @@
+Mon May 22 16:45:25 2023  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.19]:
+	* VERSION: bump
+	* NEWS.md: updated
+	* README.md: generated
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(new): provide hint for 'no_passskey_warning'
+
 Tue Jan 24 13:53:18 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.18]:

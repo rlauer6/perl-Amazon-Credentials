@@ -7,6 +7,36 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.19 (2023-05-22)
+
+## Enhancements
+
+* provided hint about `no_passkey_warning` in warning message
+
+## Fixes
+
+* None
+
+# perl-Amazon-Credentials 1.1.18 (2023-01-24)
+
+## Enhancements
+
+* removed Log::Log4perl as a requirement
+
+## Fixes
+
+* None
+
+# perl-Amazon-Credentials 1.1.17 (2023-01-09)
+
+## Enhancements
+
+* None
+
+## Fixes
+
+* removed FOO.pm from distributin
+
 # perl-Amazon-Credentials 1.1.13-16 (2023-01-08)
 
 Versions 1.13 - 1.1.16 provide minor refactoring but no major fixes or
@@ -15,7 +45,7 @@ enhancements.
 ## Enhancements
 
 - new help scripts added to distribution
-  * amazon-credentials, get-sso-credentials
+  * `amazon-credentials`, `get-sso-credentials`
   
 ## Fixes
 
