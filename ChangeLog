@@ -1,3 +1,46 @@
+Mon Jul 17 08:54:07 2023  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.20]:
+	* VERSION: bump
+	* NEWS.md: updated
+	* README.md: generated
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- ditch the ## end stuff, it wasn't that helpful
+	- remove the quotes in hash keys
+	(get_creds_from_ini_file)
+	- no 'profile' variable in default section
+	- set aws_session_token from file and 'token'
+	- refactor to use populate_creds
+	(populate_creds): new
+	(get_creds_from_env): refactored to use populate_creds
+	(get_creds_from_process): likewise
+	(get_creds_from_role):  likewise
+	(set_sso_credentials): refactored for clarity
+	(get_role_credentials): likewise
+	(export_credentials): likewise
+	(main): use above
+	* t/14-utils.t: new
+	* src/main/perl/UnitTestSetup.pm
+	- package
+	- export nothing by default
+	- remove useless ## end comments
+	(12-error.t)
+	- remove 'profile=foo', no profile in default section
+	* t/00-credentials.t: refactored, import methods from UnitTestSetup
+	* t/01-credentials.t: likewise
+	* t/02-credentials.t: likewise
+	* t/03-container.t: likewise
+	* t/04-process.t: likewise
+	* t/05-format.t: likewise
+	* t/06-security.t: likewise
+	* t/07-encryption.t: likewise
+	* t/08-imdsv2.t: likewise
+	* t/09-live-credentials.t: likewise
+	* t/10-logging.t: likewise
+	* t/11-order.t: likewise
+	* t/12-error.t: likewise
+	* t/13-env.t: likewise
+
 Mon May 22 16:45:25 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.19]:

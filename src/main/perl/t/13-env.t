@@ -6,14 +6,14 @@ use lib qw{. lib};
 use Test::More tests => 5;
 use Test::Output;
 
-use UnitTestSetup;
+use UnitTestSetup qw(init_test);
 
 use Data::Dumper;
 use English qw{ -no_match_vars };
 
 BEGIN {
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 my $creds;
 
@@ -27,11 +27,12 @@ $creds = eval {
   );
 };
 
-like( $EVAL_ERROR, qr/^no credentials available/, 'raise_error => 1' )
+like( $EVAL_ERROR, qr/^no\scredentials\savailable/xsm, 'raise_error => 1' )
   or BAIL_OUT($EVAL_ERROR);
 
-$ENV{AWS_ACCESS_KEY_ID}     = 'AKIexample';
-$ENV{AWS_SECRET_ACCESS_KEY} = '599797945475eefadfd';
+local $ENV{AWS_ACCESS_KEY_ID}     = 'AKIexample';
+local $ENV{AWS_SECRET_ACCESS_KEY} = '599797945475eefadfd';
+
 delete $ENV{AWS_REGION};
 delete $ENV{AWS_DEFAULT_REGION};
 
@@ -54,3 +55,5 @@ is(
 );
 
 is( $creds->get_region, 'us-east-2', 'default region from .aws/config' );
+
+1;

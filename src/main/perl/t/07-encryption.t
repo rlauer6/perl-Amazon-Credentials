@@ -9,32 +9,33 @@ use English qw{ -no_match_vars };
 use JSON::PP;
 use MIME::Base64;
 use Test::More;
-use UnitTestSetup;
-
-my $has_crypt_cbc = eval {
-  require Crypt::CBC;
-  require Crypt::Cipher::AES;
-};
-
-if ( !$has_crypt_cbc ) {
-  plan skip_all => 'Crypt::CBC unavilable';
-} ## end if ( !$has_crypt_cbc )
-else {
-  plan tests => 14;
-} ## end else [ if ( !$has_crypt_cbc )]
+use UnitTestSetup qw(:all);
 
 BEGIN {
+  my $has_crypt_cbc = eval {
+    require Crypt::CBC;
+    require Crypt::Cipher::AES;
+  };
+
+  if ( !$has_crypt_cbc ) {
+    plan skip_all => 'Crypt::CBC unavilable';
+  }
+  else {
+    plan tests => 14;
+  }
+
   {
-    no strict 'refs';
+    no strict 'refs';  ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
-    *{'HTTP::Request::request'} = sub { new HTTP::Response; };
+    *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
 
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { 1; };
 
     *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { new HTTP::Response; };
+    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
+    ## no critic
   }
 
   use Module::Loaded;
@@ -43,7 +44,8 @@ BEGIN {
   mark_as_loaded(HTTP::Response);
   mark_as_loaded(LWP::UserAgent);
 
-} ## end BEGIN
+  use_ok('Amazon::Credentials');
+}
 
 ########################################################################
 sub my_encrypt {
@@ -53,17 +55,17 @@ sub my_encrypt {
 
   my $sum = 0;
 
-  foreach ( split //, $passkey ) {
+  foreach ( split //xsm, $passkey ) {
     $sum += ord $_;
-  } ## end foreach ( split //, $passkey)
+  }
 
   my @encrypted_str;
-  foreach ( split //, $str ) {
+  foreach ( split //xsm, $str ) {
     push @encrypted_str, $sum + ord $_;
-  } ## end foreach ( split //, $str )
+  }
 
   return \@encrypted_str;
-} ## end sub my_encrypt
+}
 
 ########################################################################
 sub my_decrypt {
@@ -74,19 +76,19 @@ sub my_decrypt {
   my @encrypted_str = @{$str};
   my $sum           = 0;
 
-  foreach ( split //, $passkey ) {
+  foreach ( split //xsmn, $passkey ) {
     $sum += ord $_;
-  } ## end foreach ( split //, $passkey)
+  }
 
-  $str = '';
+  $str = q{};
 
   foreach my $c (@encrypted_str) {
     $c -= $sum;
     $str .= chr $c;
-  } ## end foreach my $c (@encrypted_str)
+  }
 
   return $str;
-} ## end sub my_decrypt
+}
 
 ########################################################################
 sub check_credentials {
@@ -112,18 +114,18 @@ sub check_credentials {
         $test . ' - ' . $e . ' decrypted ok'
       );
 
-    } ## end foreach my $e (qw{ access_key_id secret_access_key })
-  } ## end if ( $credentials->get_cache)
+    }
+  }
   else {
     foreach my $e (qw{access_key_id secret_access_key }) {
       $retval
         += !ok( !defined $credentials->can( 'get__' . $e )->($credentials),
         $test . ' - ' . $e . ' not cached' );
-    } ## end foreach my $e (qw{access_key_id secret_access_key })
-  } ## end else [ if ( $credentials->get_cache)]
+    }
+  }
 
   return !$retval;
-} ## end sub check_credentials
+}
 
 ########################################################################
 sub check_cipher {
@@ -168,15 +170,15 @@ sub check_cipher {
     'encrypted with ' . $cipher_name
     )
     or diag( Dumper [ $passkey, $encrypted_access_key_id, $access_key_id ] );
-} ## end sub check_cipher
+
+  return;
+}
 
 # +------------------ +
 # | TESTS START HERE |
 # +------------------ +
 
 init_test;
-
-use_ok('Amazon::Credentials');
 
 Amazon::Credentials->import('create_passkey');
 
@@ -192,7 +194,7 @@ subtest 'obfuscation without Crypt::CBC' => sub {
 
   {
     # use Devel::Hide qw{ -lexically  -quiet Crypt::CBC };
-    eval "use Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES };";
+    eval "use Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES };";  ## no critic
 
     my $credentials = Amazon::Credentials->new(
       profile            => 'foo',
@@ -219,7 +221,7 @@ subtest 'obfuscation without Crypt::CBC' => sub {
       or diag( Dumper [$credentials] );
   }
 
-  eval q{ no Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES }; };
+  eval q{ no Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES }; };  ## no critic
 };
 
 ########################################################################
@@ -267,13 +269,13 @@ subtest 'rotate credentials' => sub {
 subtest 'rotate credentials with custom passkey' => sub {
 ########################################################################
 
-  our $passkey = create_passkey();
+  our $PASSKEY = create_passkey();
 
   sub get_passkey {
     my ($regenerate) = @_;
 
-    return $regenerate ? create_passkey() : $passkey;
-  } ## end sub get_passkey
+    return $regenerate ? create_passkey() : $PASSKEY;
+  }
 
   my $credentials = Amazon::Credentials->new(
     passkey            => \&get_passkey,
@@ -284,13 +286,13 @@ subtest 'rotate credentials with custom passkey' => sub {
 
   isa_ok( $credentials, 'Amazon::Credentials' );
 
-  my $old_passkey = $passkey;
+  my $old_passkey = $PASSKEY;
 
-  $passkey = $credentials->rotate_credentials( get_passkey(1) );
+  $PASSKEY = $credentials->rotate_credentials( get_passkey(1) );
 
-  ok( $old_passkey && $passkey, 'passkeys are not null' );
+  ok( $old_passkey && $PASSKEY, 'passkeys are not null' );
 
-  ok( $old_passkey ne $passkey, 'passkey has changed' );
+  ok( $old_passkey ne $PASSKEY, 'passkey has changed' );
 
   check_credentials( $credentials, \%unencrypted_creds, 'rotate (cache on)' )
     or diag( Dumper [$credentials] );
@@ -302,20 +304,20 @@ subtest 'rotate credentials with custom passkey' => sub {
     no_passkey_warning => 1,
   );
 
-  $old_passkey = $passkey = get_passkey(1);
+  $old_passkey = $PASSKEY = get_passkey(1);
 
-  $passkey = $credentials->rotate_credentials( get_passkey(1) );
+  $PASSKEY = $credentials->rotate_credentials( get_passkey(1) );
 
-  ok( $old_passkey && $passkey, 'passkeys are not null (cacheing off)' );
+  ok( $old_passkey && $PASSKEY, 'passkeys are not null (cacheing off)' );
 
-  ok( $old_passkey ne $passkey, 'passkey has changed (cacheing off' );
+  ok( $old_passkey ne $PASSKEY, 'passkey has changed (cacheing off' );
 
   check_credentials( $credentials, \%unencrypted_creds, 'rotate (cache off)' )
     or diag( Dumper [$credentials] );
 
   sub get_passkey_v2 {
     return 'abra cadabra ala kazam!';
-  } ## end sub get_passkey_v2
+  }
 
   $credentials->set_cache(1);
   $credentials->set_passkey( \&get_passkey_v2 );
@@ -369,9 +371,10 @@ subtest 'custom encryption/decryption setting' => sub {
       );
     };
 
-    ok( $EVAL_ERROR && $EVAL_ERROR =~ /must be a code ref/, "set just $sub" )
+    ok( $EVAL_ERROR && $EVAL_ERROR =~ /must\sbe\sa\scode\sref/xsm,
+      "set just $sub" )
       or diag($EVAL_ERROR);
-  } ## end foreach my $sub (qw{ encrypt decrypt })
+  }
 };
 
 ########################################################################
@@ -535,9 +538,9 @@ subtest 'use Crypt::CBC' => sub {
 
   if ($EVAL_ERROR) {
     plan skip_all => $EVAL_ERROR;
-  } ## end if ($EVAL_ERROR)
+  }
 
-  check_cipher( '', 'default cipher' );
+  check_cipher( q{}, 'default cipher' );
 };
 
 ########################################################################
@@ -546,11 +549,13 @@ subtest 'use custom cipher' => sub {
 
   my $cipher_name = $ENV{AMAZON_CREDENTIAL_TEST_CIPHER} || 'Crypt::Blowfish';
 
-  eval "require $cipher_name;";
+  eval "require $cipher_name;";  ## no critic
 
   if ($EVAL_ERROR) {
     plan skip_all => $EVAL_ERROR;
-  } ## end if ($EVAL_ERROR)
+  }
 
   check_cipher( $cipher_name, 'custom cipher ' . $cipher_name );
 };
+
+1;

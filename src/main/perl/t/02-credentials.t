@@ -9,20 +9,22 @@ use Data::Dumper;
 use Date::Format;
 use JSON::PP;
 
-use UnitTestSetup;
+use UnitTestSetup qw(:all);
 
 BEGIN {
   {
-    no strict 'refs';
+    no strict 'refs';  ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
-    *{'HTTP::Request::request'} = sub { new HTTP::Response; };
+    *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
 
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { TRUE; };
 
     *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { new HTTP::Response; };
+    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
+
+    ## use critic
   }
 
   use Module::Loaded;
@@ -32,7 +34,7 @@ BEGIN {
   mark_as_loaded(LWP::UserAgent);
 
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 # +-------------------------+
 # | MAIN SCRIPT STARTS HERE |
@@ -82,13 +84,19 @@ $new_creds{Token}           = 'buz';
 my $content = encode_json( \%new_creds );
 
 {
-  no strict 'refs';
+  no strict 'refs';  ## no critic
+
   my $response = [ 'role', $content ];
   *{'HTTP::Response::content'} = sub { shift @{$response}; };
 }
 
 $creds->set_role('role');
+
+local $ENV{AWS_EC2_METADATA_DISABLED} = 'false';
+
 $creds->refresh_token;
 
 ok( !$creds->is_token_expired, 'refresh_token()' )
   or diag( Dumper [ $creds->get_expiration(), format_time ] );
+
+1;

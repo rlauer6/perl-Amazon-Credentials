@@ -8,15 +8,15 @@ use Test::More tests => 7;
 use Data::Dumper;
 use English qw{ -no_match_vars };
 
-use UnitTestSetup;
+use UnitTestSetup qw(:all);
 
 BEGIN {
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 init_test;
 
-print Dumper [ @ARGV, $PROGRAM_NAME ];
+print {*STDERR} Dumper [ @ARGV, $PROGRAM_NAME ];
 
 my $creds = eval {
   Amazon::Credentials->new(
@@ -49,3 +49,5 @@ is( $creds->get_region, 'us-east-1', 'region' );
 
 is( $creds->get_source, '.aws/credentials' )
   or diag( Dumper [$creds] );
+
+1;

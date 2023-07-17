@@ -7,22 +7,25 @@ use Test::More tests => 5;
 
 use Data::Dumper;
 use Date::Format;
+use English qw(-no_match_vars);
+
 use JSON::PP;
-use UnitTestSetup;
+use UnitTestSetup qw(init_test format_time);
 
 BEGIN {
   {
-    no strict 'refs';
+    no strict 'refs';  ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
-    *{'HTTP::Request::request'} = sub { new HTTP::Response; };
+    *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
 
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { 1; };
 
     *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { new HTTP::Response; };
+    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
   }
+  ## no critic
 
   use Module::Loaded;
 
@@ -31,7 +34,7 @@ BEGIN {
   mark_as_loaded(LWP::UserAgent);
 
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 init_test;
 
@@ -45,25 +48,29 @@ my $creds = Amazon::Credentials->new(
 isa_ok( $creds, 'Amazon::Credentials' ) or diag( Dumper [$creds] );
 
 # format_credentials()
+########################################################################
 subtest 'format_credentials()' => sub {
+########################################################################
   my $str = eval { $creds->format_credentials("export %s=%s\n"); };
 
   ok( $str, 'format_credentials' )
-    or diag($@);
+    or diag($EVAL_ERROR);
 
-  my @lines = split /\n/, $str;
+  my @lines = split /\n/xsm, $str;
 
-  ok( @lines == 2, "formatted 2 lines" ) or diag( Dumper [ $str, \@lines ] );
+  ok( @lines == 2, 'formatted 2 lines' ) or diag( Dumper [ $str, \@lines ] );
 
   foreach my $l (@lines) {
-    ok( $l =~ /^export (AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY)=(.*)$/,
+    ok( $l =~ /^export\s(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY)=(.*)$/xsm,
       'export %s=%s' )
       or diag($l);
-  } ## end foreach my $l (@lines)
+  }
 };
 
 # credential_keys()
+########################################################################
 subtest 'credential_keys()' => sub {
+########################################################################
   my $credential_keys = $creds->credential_keys;
   isa_ok( $credential_keys, 'HASH' ) or diag( Dumper [$credential_keys] );
 
@@ -75,10 +82,12 @@ subtest 'credential_keys()' => sub {
 };
 
 # as_string()
+########################################################################
 subtest 'as_string' => sub {
+########################################################################
   my $json = $creds->as_string();
 
-  ok( $json && $json =~ /^\{[^\}]+\}/, 'smells like a JSON string' );
+  ok( $json && $json =~ /^[{][^}]+[}]/xsm, 'smells like a JSON string' );
 
   my $obj = eval { return JSON::PP->new->decode($json); };
 
@@ -94,3 +103,5 @@ subtest 'as_string' => sub {
     'JSON string AWS_SECRET_ACCESS_KEY'
   );
 };
+
+1;

@@ -1,3 +1,5 @@
+#!/usr/bin/env perl
+
 use strict;
 use warnings;
 
@@ -7,12 +9,13 @@ use Test::More tests => 6;
 use Test::Output;
 
 use Data::Dumper;
-use English qw{ -no_match_vars };
-use UnitTestSetup;
+use English qw( -no_match_vars );
+
+use UnitTestSetup qw(:all);
 
 BEGIN {
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 init_test( test => '12-error.t' );
 
@@ -27,7 +30,7 @@ $creds = eval {
   );
 };
 
-like( $EVAL_ERROR, qr/^no credentials available/, 'raise_error => 1' )
+like( $EVAL_ERROR, qr/^no\scredentials\savailable/xsm, 'raise_error => 1' )
   or BAIL_OUT($EVAL_ERROR);
 
 stderr_like(
@@ -40,9 +43,9 @@ stderr_like(
           no_passkey_warning => 1,
         }
       );
-    } ## end eval
+    }
   },
-  qr/^no credentials available/,
+  qr/^no\scredentials\savailable/xsm,
   'no raise error, but print error'
 );
 
@@ -60,9 +63,9 @@ stderr_is(
           no_passkey_warning => 1,
         }
       );
-    } ## end eval
+    }
   },
-  '',
+  q{},
   'no print error'
 );
 
@@ -73,6 +76,7 @@ $creds = eval {
   );
 };
 
-like( $EVAL_ERROR, qr/could not open/, 'bad process' )
+like( $EVAL_ERROR, qr/could\snot\sopen/xsm, 'bad process' )
   or diag( Dumper ["$EVAL_ERROR"] );
 
+1;

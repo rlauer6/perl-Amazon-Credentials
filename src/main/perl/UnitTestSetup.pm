@@ -1,15 +1,20 @@
+package UnitTestSetup;
+
 use strict;
 use warnings;
 
-use parent qw{ Exporter };
+use parent qw( Exporter );
 
 use Data::Dumper;
 use Date::Format;
 use File::Path;
-use File::Temp qw{ tempdir };
+use File::Temp qw( tempdir );
 use Test::More;
 
-our @EXPORT = qw{ init_test format_time };
+our @EXPORT_OK
+  = qw( init_test format_time TRUE FALSE FIVE_MINUTES ISO_8601_FORMAT);
+
+our %EXPORT_TAGS = ( all => [@EXPORT_OK], );
 
 use constant {
   ISO_8601_FORMAT => '%Y-%m-%dT%H:%M:%SZ',
@@ -18,7 +23,7 @@ use constant {
   FIVE_MINUTES    => 5 * 60,
 };
 
-caller() or __PACKAGE__->main();
+caller or __PACKAGE__->main();
 
 ########################################################################
 sub format_time {
@@ -26,7 +31,7 @@ sub format_time {
   my ($time) = @_;
 
   return time2str( ISO_8601_FORMAT, time + $time, 'GMT' );
-} ## end sub format_time
+}
 
 ########################################################################
 sub read_config {
@@ -45,15 +50,15 @@ sub read_config {
       $config_name = $1;
       $configs{$1} = [];
       next;
-    } ## end if ( $line =~ /^--- (.*) ---$/)
+    }
 
     push @{ $configs{$config_name} }, $line;
-  } ## end while ( my $line = <$fh> )
+  }
 
   close $fh;
 
   return $configs{$test} ? $configs{$test} : $configs{'01-credentials.t'};
-} ## end sub read_config
+}
 
 ########################################################################
 sub create_credentials_file {
@@ -72,7 +77,7 @@ sub create_credentials_file {
     my $val = $vars->{$var};
 
     s/$tmpl_var/$val/g;
-  } ## end foreach ( @{$credentials} )
+  }
 
   mkdir "$home/.aws";
 
@@ -84,7 +89,7 @@ sub create_credentials_file {
   close $fh;
 
   return "$home/.aws/credentials";
-} ## end sub create_credentials_file
+}
 
 ########################################################################
 sub create_config_file {
@@ -93,9 +98,9 @@ sub create_config_file {
 
   if ( !-d "$home/.aws" ) {
     mkdir "$home/.aws";
-  } ## end if ( !-d "$home/.aws" )
+  }
 
-  open( my $fh, '>', "$home/.aws/config" )
+  open my $fh, '>', "$home/.aws/config"
     or BAIL_OUT('could not create temporary config file');
 
   print {$fh} join "\n", qw{[default] region=us-east-2};
@@ -103,7 +108,7 @@ sub create_config_file {
   close $fh;
 
   return "$home/.aws/config";
-} ## end sub create_config_file
+}
 
 ########################################################################
 sub create_home_dir {
@@ -115,7 +120,7 @@ sub create_home_dir {
   $ENV{HOME} = $home;
 
   return $home;
-} ## end sub create_home_dir
+}
 
 ########################################################################
 sub init_test {
@@ -132,24 +137,26 @@ sub init_test {
   create_config_file($home);
 
   return $home;
-} ## end sub init_test
+}
 
 sub main {
-  print Dumper [
+  return print {*STDERR} Dumper [
     init_test(
       cleanup => 0,
       test    => '01-credentials.t',
       vars    => { process => 'foo' },
     )
   ];
-} ## end sub main
+}
 
 1;
 
 __DATA__
 --- 01-credentials.t ---
 [default]
-profile = bar
+aws_access_key_id=bar-aws-access-key-id
+aws_secret_access_key=bar-aws-secret-access-key
+region = us-east-1
 
 [bar]
 aws_access_key_id=bar-aws-access-key-id
@@ -174,7 +181,8 @@ region = us-west-2
 
 --- 12-error.t ---
 [default]
-profile = foo
+aws_access_key_id=foo-aws-access-key-id
+aws_secret_access_key=foo-aws-secret-access-key
 
 [foo]
 aws_access_key_id=foo-aws-access-key-id
@@ -183,5 +191,3 @@ aws_secret_access_key=foo-aws-secret-access-key
 [profile boo]
 credential_process = some_process_that_does_not_exist
 region = us-west-2
-
-

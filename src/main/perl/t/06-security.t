@@ -8,21 +8,22 @@ use Test::Output;
 
 use Data::Dumper;
 use JSON::PP;
-use UnitTestSetup;
+use UnitTestSetup qw(:all);
 
 BEGIN {
   {
-    no strict 'refs';
+    no strict 'refs';  ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
-    *{'HTTP::Request::request'} = sub { new HTTP::Response; };
+    *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
 
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { 1; };
 
     *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { new HTTP::Response; };
+    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
   }
+  ## no critic
 
   use Module::Loaded;
 
@@ -31,7 +32,7 @@ BEGIN {
   mark_as_loaded(LWP::UserAgent);
 
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 init_test;
 
@@ -44,11 +45,13 @@ subtest 'insecure => undef' => sub {
     }
   );
 
-  ok( $stderr_from =~ /blocked/, 'configuration file dump blocked' )
+  ok( $stderr_from =~ /blocked/xsm, 'configuration file dump blocked' )
     or diag($stderr_from);
 };
 
+########################################################################
 subtest 'insecure => 1' => sub {
+########################################################################
 
   $stderr_from = stderr_from(
     sub {
@@ -69,14 +72,16 @@ subtest 'insecure => 1' => sub {
   ) or diag($stderr_from);
 };
 
+########################################################################
 subtest 'insecure => 2' => sub {
+########################################################################
 
   $stderr_from = stderr_from(
     sub {
       Amazon::Credentials->new(
         { profile  => 'foo',
           debug    => 1,
-          insecure => 2
+          insecure => 2,
         }
       );
     }
@@ -86,3 +91,5 @@ subtest 'insecure => 2' => sub {
     'credentials NOT blocked' )
     or diag($stderr_from);
 };
+
+1;

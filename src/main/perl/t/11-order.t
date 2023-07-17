@@ -6,12 +6,12 @@ use lib qw{. lib};
 use Test::More tests => 5;
 
 use Data::Dumper;
-use English qw{ -no_match_vars };
-use UnitTestSetup;
+use English       qw{ -no_match_vars };
+use UnitTestSetup qw(:all);
 
 BEGIN {
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 init_test;
 
@@ -28,10 +28,11 @@ is( $creds->get_aws_access_key_id,
 
 $creds = eval { return Amazon::Credentials->new( order => 'blah' ); };
 
-like( $EVAL_ERROR, qr/invalid/, 'only valid locations' );
+like( $EVAL_ERROR, qr/invalid/xsm, 'only valid locations' );
 
 $creds
   = eval { return Amazon::Credentials->new( order => { this => 'blah' } ); };
 
-like( $EVAL_ERROR, qr/array ref/, 'only array refs or scalars' );
+like( $EVAL_ERROR, qr/array\sref/xsm, 'only array refs or scalars' );
 
+1;

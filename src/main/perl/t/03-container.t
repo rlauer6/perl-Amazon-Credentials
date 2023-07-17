@@ -7,14 +7,14 @@ use Test::More tests => 4;
 use JSON::PP;
 
 use Data::Dumper;
-use UnitTestSetup;
+use UnitTestSetup qw(:all);
 
 BEGIN {
   {
-    no strict 'refs';
+    no strict 'refs';  ## no critic
 
     *{'HTTP::Request::new'}       = sub { bless {}, 'HTTP::Request'; };
-    *{'HTTP::Request::request'}   = sub { new HTTP::Response; };
+    *{'HTTP::Request::request'}   = sub { HTTP::Response->new; };
     *{'HTTP::Request::header'}    = sub { };
     *{'HTTP::Request::as_string'} = sub { };
 
@@ -22,7 +22,9 @@ BEGIN {
     *{'HTTP::Response::is_success'} = sub { 1; };
 
     *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { new HTTP::Response; };
+    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
+
+    ## use critic
   }
 
   use Module::Loaded;
@@ -32,15 +34,15 @@ BEGIN {
   mark_as_loaded(LWP::UserAgent);
 
   use_ok('Amazon::Credentials');
-} ## end BEGIN
+}
 
 # +-------------------------+
 # | MAIN SCRIPT STARTS HERE |
 # +-------------------------+
 
 # could be anything...but must exist
-$ENV{AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} = 'blah';
-$ENV{ECS_CONTAINER_METADATA_URI_V4}          = 'blah';
+local $ENV{AWS_CONTAINER_CREDENTIALS_RELATIVE_URI} = 'blah';
+local $ENV{ECS_CONTAINER_METADATA_URI_V4}          = 'blah';
 
 my %container_creds;
 
@@ -64,10 +66,12 @@ $expected_creds{source}                = 'IAM';
 $expected_creds{container}             = 'ECS';
 
 {
-  no strict 'refs';
+  no strict 'refs';  ## no critic
 
   *{'HTTP::Response::content'} = sub { return $response; };
 }
+
+local $ENV{AWS_EC2_METADATA_DISABLED} = 'false';
 
 my $creds = Amazon::Credentials->new(
   { order => \@order,
@@ -91,10 +95,12 @@ my @credential_keys = qw{
 
 my %returned_creds;
 
-if ( ref($creds) ) {
+if ( ref $creds ) {
   foreach my $k (@credential_keys) {
     $returned_creds{$k} = $creds->can("get_$k")->($creds);
-  } ## end foreach my $k (@credential_keys)
-} ## end if ( ref($creds) )
+  }
+}
 
 is_deeply( \%expected_creds, \%returned_creds, 'got expected creds' );
+
+1;

@@ -7,6 +7,17 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.20 (2023-07-17)
+
+## Enhancements
+
+* some refactoring, new unit test
+
+## Fixes
+
+* fixed https://rt.cpan.org/Ticket/Display.html?id=149013 - incorrect
+  parsing of AWS config file
+
 # perl-Amazon-Credentials 1.1.19 (2023-05-22)
 
 ## Enhancements
