@@ -7,6 +7,17 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.21 (2023-07-22)
+
+## Enhancements
+
+* None
+
+## Fixes
+
+* fixed test t/07-encryption.t which broken in older Perls due to typo
+  in regexp
+
 # perl-Amazon-Credentials 1.1.20 (2023-07-17)
 
 ## Enhancements

@@ -1,3 +1,11 @@
+Sat Jul 22 09:22:11 2023  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.21]:
+	* VERSION: bump
+	* NEWS.md: updated
+	* README.md: generated
+	* src/main/perl/t/07-encryption.t: typo (add n to regxp options)
+
 Mon Jul 17 08:54:07 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.20]:

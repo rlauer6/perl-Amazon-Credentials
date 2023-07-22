@@ -76,7 +76,7 @@ sub my_decrypt {
   my @encrypted_str = @{$str};
   my $sum           = 0;
 
-  foreach ( split //xsmn, $passkey ) {
+  foreach ( split //xsm, $passkey ) {
     $sum += ord $_;
   }
 
