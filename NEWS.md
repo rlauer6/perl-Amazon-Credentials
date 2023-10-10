@@ -7,6 +7,16 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.22 (2023-10-10)
+
+## Enhancements
+
+* None
+
+## Fixes
+
+* specify 1.033 as min version for Test::Output
+
 # perl-Amazon-Credentials 1.1.21 (2023-07-22)
 
 ## Enhancements

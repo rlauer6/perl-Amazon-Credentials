@@ -1,3 +1,10 @@
+Tue Oct 10 07:06:00 2023  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.22]:
+	* VERSION: bump
+	* cpan/requires: min version for Test::Output = 1.033
+	* README.md: generated
+
 Sat Jul 22 09:22:11 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.21]:

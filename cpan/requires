@@ -14,4 +14,5 @@ LWP::UserAgent 6.36
 MIME::Base64 3.13
 POSIX::strptime 0.13
 Scalar::Util 1.5
++Test::Output 1.033
 Time::Local 1.2300
