@@ -7,6 +7,20 @@ previous versions.  If critical bugs are found in any of the software,
 notice of such bugs and the versions in which they were fixed will be
 noted here, as well.
 
+# perl-Amazon-Credentials 1.1.23 (2023-11-29)
+
+## Enhancements
+
+* added `--version` option to `amazon-credentials`
+* added `--container` option (same as `--ec2`) to `amazon-credentials`
+
+## Fixes
+
+* prevent uninitialized warning when retrieving credentials from
+  container or EC2
+* `--ec2` option was busted
+* minor refactoring
+
 # perl-Amazon-Credentials 1.1.22 (2023-10-10)
 
 ## Enhancements

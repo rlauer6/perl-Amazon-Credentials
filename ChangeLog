@@ -1,3 +1,18 @@
+Wed Nov 29 06:08:40 2023  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.23]:
+	* VERSION: bump
+	* README.md: generated
+	* NEWS.md: update
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	(help): added version
+	(get_creds_from_role)
+	- avoid uninitialized warning
+	- use safe_dumper for logging
+	(get_creds_from_container)
+	- croak on error, don't just log message
+	(main): minor refactoring
+
 Tue Oct 10 07:06:00 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.22]:
