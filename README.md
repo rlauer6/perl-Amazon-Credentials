@@ -53,7 +53,7 @@ or pass your SSO role name and account ID...
 
 # VERSION
 
-This document reverse to verion 1.1.23 of
+This document reverse to verion 1.1.24 of
 [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
 # METHODS AND SUBROUTINES
