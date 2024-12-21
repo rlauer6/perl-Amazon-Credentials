@@ -18,7 +18,7 @@ configuration files, instance meta-data or container role.
 
 You can specify the order using the `order` option in the constructor
 to determine the order in which the class will look for credentials.
-The default order is _environent_, _file_, _container_, _instance
+The default order is _environment_, _file_, _container_, _instance
 meta-data_. See ["new"](#new).
 
 _NEW!_
