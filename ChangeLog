@@ -1,3 +1,12 @@
+Fri Sep  5 16:56:37 2025  Rob Lauer  <rlauer6@comcast.net>
+
+	[1.1.25]:
+	* VERSION: bump
+	* cpan/Makefile.am: no path for now
+	* src/main/perl/lib/Amazon/Credentials.pm.in
+	- don't use fat arrows with constants dummy
+	* README.md: generated
+
 Wed Nov 29 06:44:45 2023  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.24]:

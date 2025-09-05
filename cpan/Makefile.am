@@ -1,6 +1,6 @@
 SUBDIRS = .
 
-CPAN_DIST_MAKER=/usr/local/bin/make-cpan-dist.pl
+CPAN_DIST_MAKER=make-cpan-dist.pl
 package_version=@PACKAGE_VERSION@
 package=@PACKAGE@
 
