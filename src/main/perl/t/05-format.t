@@ -9,12 +9,12 @@ use Data::Dumper;
 use Date::Format;
 use English qw(-no_match_vars);
 
-use JSON::PP;
+use JSON;
 use UnitTestSetup qw(init_test format_time);
 
 BEGIN {
   {
-    no strict 'refs';  ## no critic
+    no strict 'refs'; ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
     *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
@@ -61,8 +61,7 @@ subtest 'format_credentials()' => sub {
   ok( @lines == 2, 'formatted 2 lines' ) or diag( Dumper [ $str, \@lines ] );
 
   foreach my $l (@lines) {
-    ok( $l =~ /^export\s(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY)=(.*)$/xsm,
-      'export %s=%s' )
+    ok( $l =~ /^export\s(AWS_ACCESS_KEY_ID|AWS_SECRET_ACCESS_KEY)=(.*)$/xsm, 'export %s=%s' )
       or diag($l);
   }
 };
@@ -74,11 +73,9 @@ subtest 'credential_keys()' => sub {
   my $credential_keys = $creds->credential_keys;
   isa_ok( $credential_keys, 'HASH' ) or diag( Dumper [$credential_keys] );
 
-  ok( exists $credential_keys->{AWS_ACCESS_KEY_ID},
-    'hash contains AWS_ACCESS_KEY_ID' );
+  ok( exists $credential_keys->{AWS_ACCESS_KEY_ID}, 'hash contains AWS_ACCESS_KEY_ID' );
 
-  ok( exists $credential_keys->{AWS_SECRET_ACCESS_KEY},
-    'hash AWS_SECRET_ACCESS_KEY' );
+  ok( exists $credential_keys->{AWS_SECRET_ACCESS_KEY}, 'hash AWS_SECRET_ACCESS_KEY' );
 };
 
 # as_string()
@@ -89,19 +86,13 @@ subtest 'as_string' => sub {
 
   ok( $json && $json =~ /^[{][^}]+[}]/xsm, 'smells like a JSON string' );
 
-  my $obj = eval { return JSON::PP->new->decode($json); };
+  my $obj = eval { return JSON->new->decode($json); };
 
   isa_ok( $obj, 'HASH', 'is a JSON string' ) or diag( Dumper [$obj] );
 
-  ok(
-    exists $obj->{AWS_ACCESS_KEY_ID},
-    'JSON string contains AWS_ACCESS_KEY_ID'
-  );
+  ok( exists $obj->{AWS_ACCESS_KEY_ID}, 'JSON string contains AWS_ACCESS_KEY_ID' );
 
-  ok(
-    exists $obj->{AWS_SECRET_ACCESS_KEY},
-    'JSON string AWS_SECRET_ACCESS_KEY'
-  );
+  ok( exists $obj->{AWS_SECRET_ACCESS_KEY}, 'JSON string AWS_SECRET_ACCESS_KEY' );
 };
 
 1;

@@ -1,5 +1,7 @@
+*.pl
 container-test/*
 cpan/provides
+cpan/*.tmp
 **/*.1man
 src/main/perl/lib/**/*.pm
 autotools/*
@@ -22,3 +24,6 @@ config.status
 **/prove.sh.log
 **/prove.sh.trs
 **/test-suite.log
+recommends
+test-requires
+requires

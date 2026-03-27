@@ -6,7 +6,6 @@ use lib qw{ . lib};
 use Data::Dumper;
 use Date::Format;
 use English qw{ -no_match_vars };
-use JSON::PP;
 use MIME::Base64;
 use Test::More;
 use UnitTestSetup qw(:all);
@@ -25,7 +24,7 @@ BEGIN {
   }
 
   {
-    no strict 'refs';  ## no critic
+    no strict 'refs'; ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
     *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
@@ -101,26 +100,18 @@ sub check_credentials {
 
   if ( $credentials->get_cache ) {
     foreach my $e (qw{ access_key_id secret_access_key }) {
-      my $encrypted_value = $credentials->can( 'get__' . $e )->($credentials);
-      my $unencrypted_value
-        = $credentials->can( 'get_aws_' . $e )->($credentials);
+      my $encrypted_value   = $credentials->can( 'get__' . $e )->($credentials);
+      my $unencrypted_value = $credentials->can( 'get_aws_' . $e )->($credentials);
 
-      $retval
-        += !ok( $encrypted_value && $encrypted_value ne $unencrypted_value,
-        $test . ' - ' . $e . ' encrypted ok' );
+      $retval += !ok( $encrypted_value && $encrypted_value ne $unencrypted_value, $test . ' - ' . $e . ' encrypted ok' );
 
-      $retval += !ok(
-        $unencrypted_value eq $unencrypted_creds->{$e},
-        $test . ' - ' . $e . ' decrypted ok'
-      );
+      $retval += !ok( $unencrypted_value eq $unencrypted_creds->{$e}, $test . ' - ' . $e . ' decrypted ok' );
 
     }
   }
   else {
     foreach my $e (qw{access_key_id secret_access_key }) {
-      $retval
-        += !ok( !defined $credentials->can( 'get__' . $e )->($credentials),
-        $test . ' - ' . $e . ' not cached' );
+      $retval += !ok( !defined $credentials->can( 'get__' . $e )->($credentials), $test . ' - ' . $e . ' not cached' );
     }
   }
 
@@ -154,21 +145,16 @@ sub check_cipher {
     '-cipher'      => $cipher_name,
   );
 
-  my $access_key_id = decode_base64( $credentials->get__access_key_id );
+  my $access_key_id             = decode_base64( $credentials->get__access_key_id );
   my $unencrypted_access_key_id = $credentials->get_aws_access_key_id;
 
   my $encrypted_access_key_id = $cipher->encrypt($unencrypted_access_key_id);
 
-  isnt( $encrypted_access_key_id, $access_key_id,
-    'encrypted strings different (salt)' )
+  isnt( $encrypted_access_key_id, $access_key_id, 'encrypted strings different (salt)' )
     or diag( Dumper [ $passkey, $encrypted_access_key_id, $access_key_id ] );
 
   # decrypt your encrypted string with my cipher
-  is(
-    $cipher->decrypt($access_key_id),
-    $credentials->get_aws_access_key_id,
-    'encrypted with ' . $cipher_name
-    )
+  is( $cipher->decrypt($access_key_id), $credentials->get_aws_access_key_id, 'encrypted with ' . $cipher_name )
     or diag( Dumper [ $passkey, $encrypted_access_key_id, $access_key_id ] );
 
   return;
@@ -194,7 +180,7 @@ subtest 'obfuscation without Crypt::CBC' => sub {
 
   {
     # use Devel::Hide qw{ -lexically  -quiet Crypt::CBC };
-    eval "use Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES };";  ## no critic
+    eval "use Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES };"; ## no critic
 
     my $credentials = Amazon::Credentials->new(
       profile            => 'foo',
@@ -202,26 +188,18 @@ subtest 'obfuscation without Crypt::CBC' => sub {
       no_passkey_warning => 1,
     );
 
-    ok( !$credentials->get_encryption,
-      'encryption disabled (no Crypt::CBC)' );
+    ok( !$credentials->get_encryption, 'encryption disabled (no Crypt::CBC)' );
 
-    ok(
-      decode_base64( $credentials->get__access_key_id ) eq
-        $unencrypted_creds{access_key_id},
-      'base64 encoded obfuscation'
-    );
+    ok( decode_base64( $credentials->get__access_key_id ) eq $unencrypted_creds{access_key_id}, 'base64 encoded obfuscation' );
 
-    ok(
-      decode_base64( $credentials->get__secret_access_key ) eq
-        $unencrypted_creds{secret_access_key},
-      'base64 encoded obfuscation'
-    );
+    ok( decode_base64( $credentials->get__secret_access_key ) eq $unencrypted_creds{secret_access_key},
+      'base64 encoded obfuscation' );
 
     check_credentials( $credentials, \%unencrypted_creds, 'obfuscation' )
       or diag( Dumper [$credentials] );
   }
 
-  eval q{ no Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES }; };  ## no critic
+  eval q{ no Test::Without::Module qw{ Crypt::CBC Crypt::Cipher::AES }; }; ## no critic
 };
 
 ########################################################################
@@ -258,11 +236,7 @@ subtest 'rotate credentials' => sub {
     or diag( Dumper [ $passkey, $new_passkey ] );
 
   check_credentials( $credentials, \%unencrypted_creds, 'rotate' )
-    or diag(
-    Dumper [
-      $credentials->get_passkey(), 'new:', $new_passkey, $credentials
-    ]
-    );
+    or diag( Dumper [ $credentials->get_passkey(), 'new:', $new_passkey, $credentials ] );
 };
 
 ########################################################################
@@ -335,8 +309,7 @@ subtest 'rotate credentials with custom passkey' => sub {
 
   $credentials->reset_credentials(1);
 
-  check_credentials( $credentials, \%unencrypted_creds,
-    'set new passkey (cached)' )
+  check_credentials( $credentials, \%unencrypted_creds, 'set new passkey (cached)' )
     or diag( Dumper [$credentials] );
 };
 
@@ -371,8 +344,7 @@ subtest 'custom encryption/decryption setting' => sub {
       );
     };
 
-    ok( $EVAL_ERROR && $EVAL_ERROR =~ /must\sbe\sa\scode\sref/xsm,
-      "set just $sub" )
+    ok( $EVAL_ERROR && $EVAL_ERROR =~ /must\sbe\sa\scode\sref/xsm, "set just $sub" )
       or diag($EVAL_ERROR);
   }
 };
@@ -381,20 +353,13 @@ subtest 'custom encryption/decryption setting' => sub {
 subtest 'cache credentials' => sub {
 ########################################################################
 
-  my $credentials = eval {
-    return Amazon::Credentials->new(
-      profile            => 'foo',
-      cache              => 1,
-      no_passkey_warning => 1,
-    );
-  };
+  my $credentials = eval { return Amazon::Credentials->new( profile => 'foo', cache => 1, no_passkey_warning => 1, ); };
 
   check_credentials( $credentials, \%unencrypted_creds, 'cache on' )
     or diag( Dumper [$credentials] );
 
-  ok( defined $credentials->get__secret_access_key,
-    'secret access key retained' );
-  ok( defined $credentials->get__access_key_id, 'access key id retained' );
+  ok( defined $credentials->get__secret_access_key, 'secret access key retained' );
+  ok( defined $credentials->get__access_key_id,     'access key id retained' );
 
 };
 
@@ -402,20 +367,13 @@ subtest 'cache credentials' => sub {
 subtest 'do not cache credentials' => sub {
 ########################################################################
 
-  my $credentials = eval {
-    return Amazon::Credentials->new(
-      profile            => 'foo',
-      cache              => 0,
-      no_passkey_warning => 1,
-    );
-  };
+  my $credentials = eval { return Amazon::Credentials->new( profile => 'foo', cache => 0, no_passkey_warning => 1, ); };
 
   check_credentials( $credentials, \%unencrypted_creds, 'cache off' )
     or diag( Dumper [$credentials] );
 
-  ok( !defined $credentials->get__secret_access_key,
-    'secret access key removed' );
-  ok( !defined $credentials->get__access_key_id, 'access key id removed' );
+  ok( !defined $credentials->get__secret_access_key, 'secret access key removed' );
+  ok( !defined $credentials->get__access_key_id,     'access key id removed' );
 
 };
 
@@ -462,41 +420,26 @@ subtest 'rotate credentials w/new passkey' => sub {
   };
 
   # encrypted values
-  my ( $secret_access_key, $access_key_id ) = (
-    $credentials->get__secret_access_key,
-    $credentials->get__access_key_id
-  );
+  my ( $secret_access_key, $access_key_id ) = ( $credentials->get__secret_access_key, $credentials->get__access_key_id );
 
   my $new_passkey = $credentials->rotate_credentials( create_passkey() );
 
   ok( $new_passkey ne $passkey, 'passkey rotated' )
-    or diag(
-    Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ]
-    );
+    or diag( Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ] );
 
   check_credentials( $credentials, \%unencrypted_creds )
-    or diag(
-    Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ]
-    );
+    or diag( Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ] );
 
-  ok( $secret_access_key ne $credentials->get__secret_access_key,
-    'encrypted secret different' )
-    or diag(
-    Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ]
-    );
+  ok( $secret_access_key ne $credentials->get__secret_access_key, 'encrypted secret different' )
+    or diag( Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ] );
 
-  ok( $access_key_id ne $credentials->get__access_key_id,
-    'encrypted access_key_id different' )
-    or diag(
-    Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ]
-    );
+  ok( $access_key_id ne $credentials->get__access_key_id, 'encrypted access_key_id different' )
+    or diag( Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ] );
 
   $new_passkey = $credentials->rotate_credentials;
 
   ok( $new_passkey ne $passkey, 'passkey rotated' )
-    or diag(
-    Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ]
-    );
+    or diag( Dumper [ $new_passkey, $secret_access_key, $access_key_id, $credentials ] );
 
 };
 
@@ -522,8 +465,7 @@ subtest 'token encryption' => sub {
   ok( $credentials->get_token eq 'biz', 'token decrypted' )
     or diag( Dumper [$credentials] );
 
-  ok( decode_base64( $credentials->get__session_token ) ne 'biz',
-    'encrypted, not just obfuscated' )
+  ok( decode_base64( $credentials->get__session_token ) ne 'biz', 'encrypted, not just obfuscated' )
     or diag( Dumper [$credentials] );
 };
 
@@ -549,7 +491,7 @@ subtest 'use custom cipher' => sub {
 
   my $cipher_name = $ENV{AMAZON_CREDENTIAL_TEST_CIPHER} || 'Crypt::Blowfish';
 
-  eval "require $cipher_name;";  ## no critic
+  eval "require $cipher_name;"; ## no critic
 
   if ($EVAL_ERROR) {
     plan skip_all => $EVAL_ERROR;

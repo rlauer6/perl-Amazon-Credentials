@@ -4,25 +4,31 @@ use warnings;
 use lib qw{ . lib};
 
 use Test::More tests => 4;
-use JSON::PP;
+use JSON;
 
 use Data::Dumper;
 use UnitTestSetup qw(:all);
 
 BEGIN {
   {
-    no strict 'refs';  ## no critic
+    no strict 'refs'; ## no critic
 
     *{'HTTP::Request::new'}       = sub { bless {}, 'HTTP::Request'; };
     *{'HTTP::Request::request'}   = sub { HTTP::Response->new; };
     *{'HTTP::Request::header'}    = sub { };
     *{'HTTP::Request::as_string'} = sub { };
+    *{'HTTP::Request::content'}   = sub {''};
+    *{'HTTP::Request::method'}    = sub {''};
+    *{'HTTP::Request::uri'}       = sub {''};
+    *{'HTTP::Request::headers'}   = sub { bless {}, 'HTTP::Headers'; };
 
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { 1; };
 
-    *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
+    *{'Amazon::Credentials::HTTP::UserAgent::new'}     = sub { bless {}, 'Amazon::Credentials::HTTP::UserAgent'; };
+    *{'Amazon::Credentials::HTTP::UserAgent::request'} = sub { HTTP::Response->new; };
+
+    *{'HTTP::Headers::scan'} = sub { };  # no-op - no real headers to pass through
 
     ## use critic
   }
@@ -31,7 +37,7 @@ BEGIN {
 
   mark_as_loaded(HTTP::Request);
   mark_as_loaded(HTTP::Response);
-  mark_as_loaded(LWP::UserAgent);
+  mark_as_loaded(Amazon::Credentials::HTTP::UserAgent);
 
   use_ok('Amazon::Credentials');
 }
@@ -51,7 +57,7 @@ $container_creds{SecretAccessKey} = 'buz-aws-secret-access-key';
 $container_creds{Token}           = 'buz';
 $container_creds{Expiration}      = format_time( 5 + FIVE_MINUTES );
 
-my $response = JSON::PP->new->utf8->pretty->encode( \%container_creds );
+my $response = JSON->new->utf8->pretty->encode( \%container_creds );
 
 my @order = ('container');
 
@@ -66,7 +72,7 @@ $expected_creds{source}                = 'IAM';
 $expected_creds{container}             = 'ECS';
 
 {
-  no strict 'refs';  ## no critic
+  no strict 'refs'; ## no critic
 
   *{'HTTP::Response::content'} = sub { return $response; };
 }

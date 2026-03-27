@@ -128,22 +128,25 @@ AX_DEPS_CHECK
 AX_PERLDEPS_CHECK
 AX_RPMBUILD_CHECK
 
+ads_PERL_MODULE([Class::Accessor::Fast])
+ads_PERL_MODULE([Config::Tiny])
 ads_PERL_MODULE([Data::Dumper])
 ads_PERL_MODULE([Date::Format])
-ads_PERL_MODULE([Getopt::Long])
-ads_PERL_MODULE([HTTP::Request])
-ads_PERL_MODULE([JSON::PP])
-ads_PERL_MODULE([LWP::UserAgent])
-ads_PERL_MODULE([POSIX::strptime])
-ads_PERL_MODULE([Scalar::Util])
-ads_PERL_MODULE([Time::Local])
 ads_PERL_MODULE([File::chdir])
-ads_PERL_MODULE([Test::Output])
-ads_PERL_MODULE([Class::Accessor::Fast])
-ads_PERL_MODULE([ReadonlyX])
-ads_PERL_MODULE([MIME::Base64])
-ads_PERL_MODULE([POSIX::strptime])
+ads_PERL_MODULE([Getopt::Long])
+ads_PERL_MODULE([HTTP::Headers])
+ads_PERL_MODULE([HTTP::Request])
+ads_PERL_MODULE([IO::Socket::SSL])
+ads_PERL_MODULE([JSON])
 ads_PERL_MODULE([List::Util])
+ads_PERL_MODULE([MIME::Base64])
+ads_PERL_MODULE([Net::SSLeay])
+ads_PERL_MODULE([POSIX::strptime])
+ads_PERL_MODULE([POSIX::strptime])
+ads_PERL_MODULE([Readonly])
+ads_PERL_MODULE([Scalar::Util])
+ads_PERL_MODULE([Test::Output])
+ads_PERL_MODULE([Time::Local])
 
 AC_CONFIG_FILES([
     Makefile

@@ -25,4 +25,6 @@ $(bin_SCRIPTS): % : %.sh $(GBASHSCRIPTS)
 	cp $< $@
 	chmod +x $@
 
-CLEANFILES = $(GBASHSCRIPTS) $(bin_SCRIPTS)
+CLEANFILES = \
+  $(GBASHSCRIPTS) \
+  $(bin_SCRIPTS)

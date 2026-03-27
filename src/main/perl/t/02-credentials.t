@@ -7,22 +7,28 @@ use Test::More tests => 6;
 
 use Data::Dumper;
 use Date::Format;
-use JSON::PP;
+use JSON;
 
 use UnitTestSetup qw(:all);
 
 BEGIN {
   {
-    no strict 'refs';  ## no critic
+    no strict 'refs'; ## no critic
 
-    *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
-    *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
+    *{'HTTP::Request::new'}       = sub { bless {}, 'HTTP::Request'; };
+    *{'HTTP::Request::request'}   = sub { HTTP::Response->new; };
+    *{'HTTP::Request::headers'}   = sub { bless {}, 'HTTP::Headers'; };
+    *{'HTTP::Request::content'}   = sub {''};
+    *{'HTTP::Request::method'}    = sub {''};
+    *{'HTTP::Request::uri'}       = sub {''};
+    *{'HTTP::Request::as_string'} = sub {''};
 
+    *{'HTTP::Headers::scan'}        = sub { };  # no-op - no real headers to pass through
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { TRUE; };
 
-    *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
+    *{'Amazon::Credentials::HTTP::UserAgent::new'}     = sub { bless {}, 'Amazon::Credentials::HTTP::UserAgent'; };
+    *{'Amazon::Credentials::HTTP::UserAgent::request'} = sub { HTTP::Response->new; };
 
     ## use critic
   }
@@ -31,7 +37,7 @@ BEGIN {
 
   mark_as_loaded(HTTP::Request);
   mark_as_loaded(HTTP::Response);
-  mark_as_loaded(LWP::UserAgent);
+  mark_as_loaded(Amazon::Credentials::HTTP::UserAgent);
 
   use_ok('Amazon::Credentials');
 }
@@ -43,9 +49,11 @@ BEGIN {
 init_test;
 
 my $creds = Amazon::Credentials->new(
-  { profile => 'bar',
-    order   => [qw/file/],
-    debug   => $ENV{DEBUG} ? 1 : 0,
+  { profile  => 'bar',
+    order    => [qw/file/],
+    debug    => $ENV{DEBUG} ? 1 : 0,
+    insecure => 2,
+    imdsv2   => 0
   }
 );
 
@@ -56,7 +64,7 @@ my %new_creds = (
   aws_secret_access_key => 'biz-aws-secret-access-key',
   token                 => 'biz',
   expiration            => format_time( -5 + FIVE_MINUTES ),
-
+  insecure              => 2,
 );
 
 $creds->set_credentials( \%new_creds );
@@ -84,7 +92,7 @@ $new_creds{Token}           = 'buz';
 my $content = encode_json( \%new_creds );
 
 {
-  no strict 'refs';  ## no critic
+  no strict 'refs'; ## no critic
 
   my $response = [ 'role', $content ];
   *{'HTTP::Response::content'} = sub { shift @{$response}; };

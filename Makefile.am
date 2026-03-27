@@ -23,6 +23,10 @@ cpan:
 	cd . && $(MAKE)
 	cd cpan && $(MAKE) cpan
 
+include release-notes.mk
+
+include version.mk
+
 CLEANFILES =
 
 DISTCHECK_CONFIGURE_FLAGS = --enable-distcheck-hack --enable-rpmbuild

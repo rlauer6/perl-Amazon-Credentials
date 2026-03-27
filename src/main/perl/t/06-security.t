@@ -7,12 +7,11 @@ use Test::More tests => 4;
 use Test::Output;
 
 use Data::Dumper;
-use JSON::PP;
 use UnitTestSetup qw(:all);
 
 BEGIN {
   {
-    no strict 'refs';  ## no critic
+    no strict 'refs'; ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
     *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
@@ -66,10 +65,7 @@ subtest 'insecure => 1' => sub {
   ok( $stderr_from !~ /foo-aws-access-key-id/xsm, 'credentials blocked' )
     or diag($stderr_from);
 
-  ok(
-    $stderr_from =~ /aws_access_key_id/xsm,
-    'configuration contents NOT blocked'
-  ) or diag($stderr_from);
+  ok( $stderr_from =~ /aws_access_key_id/xsm, 'configuration contents NOT blocked' ) or diag($stderr_from);
 };
 
 ########################################################################
@@ -87,8 +83,7 @@ subtest 'insecure => 2' => sub {
     }
   );
 
-  ok( $stderr_from =~ /foo\-aws\-access\-key\-id/xsm,
-    'credentials NOT blocked' )
+  ok( $stderr_from =~ /foo\-aws\-access\-key\-id/xsm, 'credentials NOT blocked' )
     or diag($stderr_from);
 };
 

@@ -53,7 +53,7 @@ or pass your SSO role name and account ID...
 
 # VERSION
 
-This document reverse to verion 1.1.25 of
+This document reverse to verion 1.1.26 of
 [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
 # METHODS AND SUBROUTINES
@@ -172,6 +172,21 @@ Any of the options can also be retrieved using their corresponding
     expressions to suppress credential contents. Credentials that do not
     conform to these may still be exposed. Caution is advised._
 
+- imdsv2
+
+    Boolean flag that causes `Amazon::Credentials` to use the IMDSv2
+    protocol when retrieving instance role credentials from the EC2 metadata
+    service. IMDSv2 uses a session-oriented approach requiring a token to be
+    fetched before making metadata requests, providing stronger protection
+    against SSRF attacks.
+
+    Default: true
+
+    AWS recommends IMDSv2 for all EC2 workloads. IMDSv1 can be disabled at
+    the instance or account level as a security hardening measure, in which
+    case this option must be enabled for instance role credential retrieval
+    to succeed.
+
 - logger
 
     Pass in your own logger that has a `debug()` method.  Otherwise the
@@ -267,14 +282,18 @@ Any of the options can also be retrieved using their corresponding
 - timeout
 
     When looking for credentials in metadata URLs, this parameter
-    specifies the timeout value for [LWP](https://metacpan.org/pod/LWP).
+    specifies the timeout value in seconds for HTTP metadata sevice
+    requests.
 
     default: 3s
 
 - user\_agent
 
-    Pass in your own user agent, otherwise LWP will be used. _Probably_
-    only useful to override this for testing purposes.>
+    Pass in your own user agent, otherwise `Amazon::Credentials::HTTP::UserAgent`
+    (backed by `HTTP::Tiny`) will be used. The object must implement a `request`
+    method accepting an `HTTP::Request` object and returning a response object
+    with `content`, `content_type`, `is_success`, `code`, and `message` methods.
+    Probably only useful to override for testing purposes.
 
 ## as\_string
 
@@ -402,6 +421,20 @@ expiration time that the method should consider the token expired.
 The default is 5 minutes.  Amazon states that new credentials will be
 available _at least_ 5 minutes before a token expires.
 
+## normalize\_arn
+
+    normalize_arn( arn )
+
+Converts an STS assumed-role ARN to its equivalent IAM role ARN.
+
+    arn:aws:sts::123456789:assumed-role/my-role/session-name
+      => arn:aws:iam::123456789:role/my-role
+
+This is useful when an ARN obtained from `GetCallerIdentity` needs to be
+passed to IAM APIs such as `SimulatePrincipalPolicy` which require an IAM
+ARN and will reject STS assumed-role ARNs. Non-assumed-role ARNs (IAM users,
+IAM roles) are returned unchanged.
+
 ## reset\_credentials
 
 By default this method will remove credentials from the cache if you
@@ -523,7 +556,6 @@ Lower versions of these modules may be acceptable.
     'File::chdir'           => '0.1010'
     'HTTP::Request'         => '6.00'
     'List::Util'            => '1.5'
-    'LWP::UserAgent'        => '6.36'
     'POSIX::strptime'       => '0.13'
 
 ...and possibly others

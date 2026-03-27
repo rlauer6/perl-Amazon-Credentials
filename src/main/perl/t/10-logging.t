@@ -8,12 +8,11 @@ use Test::Output;
 
 use Data::Dumper;
 use English qw{ -no_match_vars };
-use JSON::PP;
 use UnitTestSetup qw(:all);
 
 BEGIN {
 
-  eval <<'END_OF_TEXT';  ## no critic
+  eval <<'END_OF_TEXT'; ## no critic
 use Log::Log4perl;
 use Log::Log4perl::Level;
 Log::Log4perl->easy_init($DEBUG);
@@ -27,7 +26,7 @@ END_OF_TEXT
   }
 
   {
-    no strict 'refs';  ## no critic
+    no strict 'refs'; ## no critic
 
     *{'HTTP::Request::new'}     = sub { bless {}, 'HTTP::Request'; };
     *{'HTTP::Request::request'} = sub { HTTP::Response->new; };
@@ -35,16 +34,16 @@ END_OF_TEXT
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { 1; };
 
-    *{'LWP::UserAgent::new'}     = sub { bless {}, 'LWP::UserAgent'; };
-    *{'LWP::UserAgent::request'} = sub { HTTP::Response->new; };
-    ## no critic
+    *{'Amazon::Credentials::UserAgent::new'}     = sub { bless {}, 'Amazon::Credentials::UserAgent' };
+    *{'Amazon::Credentials::UserAgent::request'} = sub { HTTP::Response->new; };
+
   }
 
   use Module::Loaded;
 
   mark_as_loaded(HTTP::Request);
   mark_as_loaded(HTTP::Response);
-  mark_as_loaded(LWP::UserAgent);
+  mark_as_loaded(Amazon::Credentials::UserAgent);
 
   use_ok('Amazon::Credentials');
 }
