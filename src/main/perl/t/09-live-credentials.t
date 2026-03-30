@@ -44,7 +44,7 @@ subtest 'get real credentials from profile' => sub {
     plan skip_all => 'no PROFILE defined';
   }
 
-  my $creds = eval { Amazon::Credentials->new( order => ['file'], debug => $ENV{DEBUG} ); };
+  my $creds = eval { Amazon::Credentials->new( order => ['file'], no_passkey_warning => 1, debug => $ENV{DEBUG} ); };
 
   ok( $creds, 'got credentials from file' )
     or BAIL_OUT($EVAL_ERROR);

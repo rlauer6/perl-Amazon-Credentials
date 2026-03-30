@@ -492,9 +492,10 @@ subtest 'use custom cipher' => sub {
   my $cipher_name = $ENV{AMAZON_CREDENTIAL_TEST_CIPHER} || 'Crypt::Blowfish';
 
   eval "require $cipher_name;"; ## no critic
+  my $err = $EVAL_ERROR;
 
-  if ($EVAL_ERROR) {
-    plan skip_all => $EVAL_ERROR;
+  if ( $err =~ /can[']t locate/i ) {
+    plan skip_all => 'Blowfish unavailable';
   }
 
   check_cipher( $cipher_name, 'custom cipher ' . $cipher_name );

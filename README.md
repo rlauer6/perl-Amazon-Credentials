@@ -13,47 +13,68 @@ CLI
 
 # DESCRIPTION
 
-Class to find AWS credentials from either the environment,
-configuration files, instance meta-data or container role.
+`Amazon::Credentials` finds AWS credentials from a chain of providers,
+searching in a configurable order until credentials are found. The default
+search order is:
 
-You can specify the order using the `order` option in the constructor
-to determine the order in which the class will look for credentials.
-The default order is _environent_, _file_, _container_, _instance
-meta-data_. See ["new"](#new).
+    environment => container => role => web_identity => file
 
-_NEW!_
+The following credential sources are supported:
 
-This class also implements a method for retrieving your SSO
-credentials. By default the method will set the environment variables
-`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and
-`AWS_SESSION_TOKEN`. Subsequently call [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials) to
-retrieve and use the credentials from the localized environment. If
-you only want to retrieve the credentials use `get_role_credentials`.
+- **Environment** — `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`,
+and optionally `AWS_SESSION_TOKEN`.
+- **Container** — ECS task roles via
+`AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` (classic ECS), or any container
+runtime that provides `AWS_CONTAINER_CREDENTIALS_FULL_URI` — including
+Lambda execution roles, Fargate task roles, and EKS Pod Identity.
+- **Instance role** — EC2 instance profile credentials via the IMDSv2
+metadata endpoint (`http://169.254.169.254`). Respects
+`AWS_EC2_METADATA_DISABLED`.
+- **Web Identity** — OIDC/JWT federation via STS
+`AssumeRoleWithWebIdentity`. Used by EKS IRSA (IAM Roles for Service
+Accounts) and GitHub Actions. Requires `AWS_WEB_IDENTITY_TOKEN_FILE`
+and `AWS_ROLE_ARN`.
+- **File** — `~/.aws/credentials` and `~/.aws/config` profiles,
+including credential\_process and SSO configurations.
 
-    use Amazon::Credentials qw(set_sso_credentials get_role_credentials);
+You can control which sources are tried, and in what order, via the
+`order` option in the constructor. See ["new"](#new).
 
-    set_sso_credentials($role_name, $account_id, $region);
-    my $credentials = Amazon::Credentials->new;
-
-    my $credential = get_role_credentials(role_name  => $sso_role_name,
-                                          account_id => $sso_account_id,
-                                          region     => $sso_region);
-
-or from the command line...
+This class also supports SSO credentials. See ["set\_sso\_credentials"](#set_sso_credentials)
+and ["get\_role\_credentials"](#get_role_credentials) for details, or use the command line tool:
 
     amazon-credentials.sh --role my-sso-role --account 01234567890
 
-or pass your SSO role name and account ID...
+## AWS\_EC2\_METADATA\_DISABLED
 
-    my $credentials =  Amazon::Credentials->new(sso_role_name  => $role,
-                                                sso_account_id => $account_id,
-                                                sso_region     => $region,
-                                               );
-    
+`Amazon::Credentials` tries hard to find credentials, searching the
+environment, ECS container endpoint, EC2 instance metadata, and credential
+files in turn. In some situations — particularly local development or CI
+environments where no metadata endpoint is reachable — this eagerness causes
+an unwanted delay while the module waits for the metadata request to time out.
+
+You have two options for dealing with this. The first is to set
+`AWS_EC2_METADATA_DISABLED` to a true value, which disables the search for
+role credentials via the EC2 instance metadata endpoint entirely. The second
+is to reduce the timeout via the `timeout` constructor option (default is 3
+seconds), which limits how long the module waits for the metadata endpoint to
+respond:
+
+    my $creds = Amazon::Credentials->new( timeout => 1 );
+
+The preferred approach when your application is designed to run in a specific
+environment is to pass an explicit `order` to the constructor, which avoids
+the search entirely:
+
+    my $creds = Amazon::Credentials->new( order => [qw(role)] );
+
+The default credential search order is:
+
+    environment => container => role => web_identity => file (profile)
 
 # VERSION
 
-This document reverse to verion 1.1.26 of
+This document reverse to verion 1.2.0 of
 [Amazon::Credentials](https://metacpan.org/pod/Amazon%3A%3ACredentials).
 
 # METHODS AND SUBROUTINES
@@ -101,11 +122,27 @@ Any of the options can also be retrieved using their corresponding
 - container
 
     If the process is running in a container, this value will contain
-    'ECS' indicating that the credentials were optained for the task
-    role. The class will look for credentials using the container metadata
-    service:
+    a string indicating the credential source. The class supports two
+    forms of container credentials:
+
+    **Relative URI** (classic ECS on EC2): credentials are fetched from
+    the ECS container metadata endpoint using
+    `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI`:
 
         http://169.254.170.2/$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
+
+    **Full URI** (Lambda, Fargate, EKS Pod Identity): credentials are
+    fetched from the full URL provided in
+    `AWS_CONTAINER_CREDENTIALS_FULL_URI`. The URL must be `https://`,
+    `http://127.x.x.x`, `http://[::1]`, or
+    `http://169.254.170.23` (EKS Pod Identity agent). An optional
+    authorization token may be provided via
+    `AWS_CONTAINER_AUTHORIZATION_TOKEN` or
+    `AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE`.
+
+    The `container` metadata key in the returned credentials hash will
+    be `'ECS'` for the relative URI form and `'full_uri'` for the full
+    URI form.
 
 - debug
 
@@ -366,7 +403,9 @@ described below.
     The source from which the credentials were found. 
 
     - IAM - retrieved from container or instance role
-    - container - 'ECS' if retrieved from container
+    - container - `'ECS'` if retrieved via `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI`;
+    `'full_uri'` if retrieved via `AWS_CONTAINER_CREDENTIALS_FULL_URI`
+    - web\_identity - retrieved via STS AssumeRoleWithWebIdentity
     - file - retrieved from file
     - process - retrieved from an external process
     - ENV - retrieved from environment
@@ -375,16 +414,56 @@ described below.
 
     get_creds_from_container()
 
-Retrieves credentials from the container's metadata at
-http://169.254.170.2.  Returns a hash of credentials containing:
+Retrieves credentials from the container credential endpoint. Supports
+two mechanisms, tried in this order:
 
-    aws_access_key_id
-    aws_secret_access_key
-    aws_session_token
+**Relative URI** — if `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` is set,
+credentials are fetched from:
 
-Returns an empty hash if no credentials found.  The environment
-variable `AWS_CONTAINER_CREDENTIALS_RELATIVE_URI` must exist or you
-must pass the value of the path as an argument.
+    http://169.254.170.2/$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI
+
+**Full URI** — if `AWS_CONTAINER_CREDENTIALS_FULL_URI` is set, that URL
+is used directly. Covers Lambda execution roles, Fargate task roles, and
+EKS Pod Identity. An authorization token is added automatically if
+`AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE` or
+`AWS_CONTAINER_AUTHORIZATION_TOKEN` is set in the environment.
+
+Returns an empty hash if neither environment variable is set.
+
+### get\_creds\_from\_web\_identity
+
+    get_creds_from_web_identity()
+
+Retrieves temporary credentials by exchanging an OIDC/JWT web identity
+token for AWS credentials via STS `AssumeRoleWithWebIdentity`. This is
+the credential mechanism used by EKS IRSA (IAM Roles for Service
+Accounts) and GitHub Actions OIDC federation.
+
+Required environment variables:
+
+- `AWS_WEB_IDENTITY_TOKEN_FILE`
+
+    Path to a file containing the OIDC/JWT token.
+
+- `AWS_ROLE_ARN`
+
+    ARN of the IAM role to assume.
+
+Optional:
+
+- `AWS_ROLE_SESSION_NAME`
+
+    A name for the assumed role session. Defaults to
+    `amazon-credentials-session`.
+
+The STS call is made without AWS request signing — the OIDC token
+itself authenticates the request, resolving the chicken-and-egg problem
+of needing credentials to obtain credentials. The regional STS endpoint
+is used when `AWS_DEFAULT_REGION` or `AWS_REGION` is set; otherwise
+the global `sts.amazonaws.com` endpoint is used.
+
+Returns an empty hash if the required environment variables are not set,
+if the token file cannot be read, or if the STS call fails.
 
 ### get\_creds\_from\_process
 
@@ -424,6 +503,13 @@ available _at least_ 5 minutes before a token expires.
 ## normalize\_arn
 
     normalize_arn( arn )
+
+    # as an exported function
+    use Amazon::Credentials qw(normalize_arn);
+    my $iam_arn = normalize_arn($sts_arn);
+
+    # or as a method
+    my $iam_arn = $creds->normalize_arn($sts_arn);
 
 Converts an STS assumed-role ARN to its equivalent IAM role ARN.
 
@@ -528,6 +614,12 @@ described throughout this documentation.
 - AWS\_REGION
 - AWS\_DEFAULT\_REGION
 - AWS\_CONTAINER\_CREDENTIALS\_RELATIVE\_URI
+- AWS\_CONTAINER\_CREDENTIALS\_FULL\_URI
+- AWS\_CONTAINER\_AUTHORIZATION\_TOKEN
+- AWS\_CONTAINER\_AUTHORIZATION\_TOKEN\_FILE
+- AWS\_WEB\_IDENTITY\_TOKEN\_FILE
+- AWS\_ROLE\_ARN
+- AWS\_ROLE\_SESSION\_NAME
 
 # BUGS AND LIMITATIONS
 
@@ -544,6 +636,11 @@ The module will not return credentials for the _developer_
 profile. While it would be theoretically possible to return those
 credentials, in order to assume a role, one needs credentials (chicken
 and egg problem).
+
+Note that `get_creds_from_web_identity` resolves this problem for
+OIDC-federated environments (EKS IRSA, GitHub Actions) by calling STS
+`AssumeRoleWithWebIdentity`, which does not require AWS signing — the
+OIDC token authenticates the request directly.
 
 # DEPENDENCIES
 
@@ -705,16 +802,16 @@ from exposure.
             # 2. assume a role in another account
             my $role_arn = 'arn:aws:iam::09876543210:role/Route53AccountAccessRole';
             my $role_session_name = "route53-role-$PID";
-            
+
             # using the SSO credentials which presumably allow you to assume the role...
             my $sts = Amazon::API::STS->new( credentials => $sso_credentials );
-            
+
             my $assume_role_result = $sts->AssumeRole(
               { RoleArn         => $role_arn,
                 RoleSessionName => $role_session_name,
               }
             );
-            
+
             my $assume_role_credentials = $assume_role_result->{AssumeRoleResult}->{Credentials};
 
             # 3. create new credentials for assumed role
@@ -724,12 +821,12 @@ from exposure.
               expiration            => $assume_role_credentials->{Expiration},
               token                 => $assume_role_credentials->{SessionToken},
              );
-            
+
             # 4. make a call to another API
             my $rt53 = Amazon::API::Route53->new(
               credentials => $role_credentials,
              );
-            
+
             my $list_tags_for_resources_response = $rt53->ListTagsForResources(
                { ResourceType => 'hostedzone',
                  ResourceIds  => \@zone_ids,
@@ -743,7 +840,7 @@ from exposure.
         to reset that passkey when you use that object.
 
             use Amazon::Credentials qw(create_passkey);
-            
+
             my %passkey = (
               sso  => create_passkey,
               role => create_passkey,
@@ -806,9 +903,9 @@ from exposure.
 
               return $regenerate ? create_passkey : $passkey;
             } 
-            
+
             my $credentials = Amazon::Credentials->new( passkey => \&get_passkey );
-            
+
             $passkey = $credentials->rotate_credentials(get_passkey(1));
 
     - Using Custom Encryption Methods

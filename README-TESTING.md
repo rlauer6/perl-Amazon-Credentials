@@ -25,12 +25,13 @@ communicating with AWS or access to actual credentials.
 | 11-order.t | check the setting of the order attribute | No |
 
 To enable tests that require an AWS account set the environment
-variable AWS_AMAZON_CREDENTIALS_TEST_ALL to any value.
+variable AWS_AMAZON_CREDENTIALS_TEST_ALL to any value and set
+AWS_PROFILE to a valid AWS profile.
 
 To run the tests (after you have built the package):
 
 ```
-cd src/main/perl/t
-prove -I lib -v t/
+cd src/main/perl
+make test
 ```
 

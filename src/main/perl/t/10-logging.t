@@ -34,8 +34,8 @@ END_OF_TEXT
     *{'HTTP::Response::new'}        = sub { bless {}, 'HTTP::Response'; };
     *{'HTTP::Response::is_success'} = sub { 1; };
 
-    *{'Amazon::Credentials::UserAgent::new'}     = sub { bless {}, 'Amazon::Credentials::UserAgent' };
-    *{'Amazon::Credentials::UserAgent::request'} = sub { HTTP::Response->new; };
+    *{'Amazon::Credentials::HTTP::UserAgent::new'}     = sub { bless {}, 'Amazon::Credentials::HTTP::UserAgent' };
+    *{'Amazon::Credentials::HTTP::UserAgent::request'} = sub { HTTP::Response->new; };
 
   }
 
@@ -43,7 +43,7 @@ END_OF_TEXT
 
   mark_as_loaded(HTTP::Request);
   mark_as_loaded(HTTP::Response);
-  mark_as_loaded(Amazon::Credentials::UserAgent);
+  mark_as_loaded(Amazon::Credentials::HTTP::UserAgent);
 
   use_ok('Amazon::Credentials');
 }

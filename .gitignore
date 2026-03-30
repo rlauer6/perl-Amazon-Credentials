@@ -1,3 +1,6 @@
+*.diffs
+**/*.log
+*.lst
 *.pl
 container-test/*
 cpan/provides

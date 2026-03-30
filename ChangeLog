@@ -1,10 +1,12 @@
 Fri Mar 27 09:53:25 2026  Rob Lauer  <rclauer@gmail.com>
 
-	[1.1.26]:
-	* release-notes-1.1.26.md: new
+	[1.2.0]:
+	* release-notes-1.2.0.md: new
 	* .gitignore
 	- add *.pl, cpan/*.tmp, recommends, test-requires requires
+	- add *.lst, *.diffs, **/*.log
 	* README.md: generated
+	* README-TEST.md: add note about AWS_PROFILE, make test
 	* VERSION: bump
 	* Makefile.am
 	- added release-notes.mk, version.mk
@@ -25,18 +27,29 @@ Fri Mar 27 09:53:25 2026  Rob Lauer  <rclauer@gmail.com>
 	- make imdsv2 default true
 	- swap out LWP for HTTP::Tiny
 	- update POD, remove LWP dependency
+	- add web_identity to search order
 	(get_default_region): default to Amazon::Credentials::HTTP::UserAgent
 	(get_role_credentials): swap out LWP
 	(_set_defaults): likewise, set imdsv2 default to true
+	(find_credentials): add web_identity
+	(get_creds_from_container: support CONTAINER_CREDENTIALS_FULL_URI
+	(_read_container_auth_token): new
+	(get_creds_from_web_identity): new
+	(_xml_element): new
+	(_extract_sts_error): new
+	(_uri_escape): new
+	(normalize_arn): new
 	* src/main/perl/t/02-credentials.t
 	- update mocks, JSON not JSON:PP, turn off imdsv2
 	* src/main/perl/t/03-container.t: update mocks, JSON not JSON::PP
 	* src/main/perl/t/05-format.t: JSON, not JSON::PP
 	* src/main/perl/t/06-security.t: remove JSON from dependencies
-	* src/main/perl/t/07-encryption.t: likewise
-	* src/main/perl/t/09-live-credentials.t: likewise
-	* src/main/perl/t/10-logging.t: likewise
-
+	* src/main/perl/t/07-encryption.t: likewise, cleanup error messages
+	* src/main/perl/t/09-live-credentials.t: remove JSON from dependencies, no_passkey_warning
+	* src/main/perl/t/08-logging.t: no_passkey_warning
+	* src/main/perl/t/10-logging.t: remove JSON, Amazon::Credentials::HTTP::UserAgent
+	* src/main/perl/t/02-web-identity.t: new
+	* 
 Fri Sep  5 16:56:37 2025  Rob Lauer  <rlauer6@comcast.net>
 
 	[1.1.25]:
